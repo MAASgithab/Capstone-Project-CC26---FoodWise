@@ -1,9 +1,10 @@
 import React from "react";
-import { Carousel } from "flowbite-react";
+import { Carousel, Card } from "flowbite-react";
 
 export default function CarouselComponent() {
   return (
     <>
+    <Card>
       <div className="h-106 w-150">
         <Carousel pauseOnHover>
           <img
@@ -18,16 +19,9 @@ export default function CarouselComponent() {
             src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
             alt="..."
           />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
-            alt="..."
-          />
-          <img
-            src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
-            alt="..."
-          />
         </Carousel>
       </div>
+      </Card>
     </>
   );
 }

@@ -10,21 +10,22 @@ import {
   NavbarCollapse,
   NavbarLink,
   NavbarToggle,
+  Button,
 } from "flowbite-react";
 
 export default function NavbarComponent() {
   return (
     <>
       <div>
-        <Navbar fluid rounded>
-          <NavbarBrand href="https://flowbite-react.com">
+        <Navbar fluid className="!bg-white sticky top-0 z-50">
+          <NavbarBrand href="/">
             <img
-              src="/favicon.svg"
+              src="/Foodwiseicons.png"
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite React Logo"
             />
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-              Flowbite React
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-black">
+              FoodWise
             </span>
           </NavbarBrand>
           <div className="flex md:order-2">
@@ -54,13 +55,15 @@ export default function NavbarComponent() {
             <NavbarToggle />
           </div>
           <NavbarCollapse>
-            <NavbarLink href="#" active>
-              Home
+            <NavbarLink href="/dashboard"  className="!text-blue-950">
+              Dashboard
             </NavbarLink>
-            <NavbarLink href="#">About</NavbarLink>
-            <NavbarLink href="#">Services</NavbarLink>
-            <NavbarLink href="#">Pricing</NavbarLink>
-            <NavbarLink href="#">Contact</NavbarLink>
+            <NavbarLink href="#"  className="!text-blue-950">
+              JurnWaste
+            </NavbarLink>
+            <NavbarLink href="#"  className="!text-blue-950">
+              Panduan
+            </NavbarLink>
           </NavbarCollapse>
         </Navbar>
       </div>
