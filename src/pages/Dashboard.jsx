@@ -1,5 +1,5 @@
 import React from 'react'
-import CardProduct from '../component/CardProduct'
+import CardProduct from '../component/Dashboard/CardProduct'
 
 export default function Dashboard() {
   return (

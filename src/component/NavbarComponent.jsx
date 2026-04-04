@@ -28,41 +28,21 @@ export default function NavbarComponent() {
               FoodWise
             </span>
           </NavbarBrand>
-          <div className="flex md:order-2">
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                <Avatar
-                  alt="User settings"
-                  img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                  rounded
-                />
-              }
-            >
-              <DropdownHeader>
-                <span className="block text-sm">Bonnie Green</span>
-                <span className="block truncate text-sm font-medium">
-                  name@flowbite.com
-                </span>
-              </DropdownHeader>
-              <DropdownItem>Dashboard</DropdownItem>
-              <DropdownItem>Settings</DropdownItem>
-              <DropdownItem>Earnings</DropdownItem>
-              <DropdownDivider />
-              <DropdownItem>Sign out</DropdownItem>
-            </Dropdown>
-            <NavbarToggle />
-          </div>
           <NavbarCollapse>
-            <NavbarLink href="/dashboard"  className="!text-blue-950">
-              Dashboard
+            <NavbarLink href="#" className="!text-black">
+              Beranda
             </NavbarLink>
-            <NavbarLink href="#"  className="!text-blue-950">
+            <NavbarLink href="#" className="!text-black">
+              Projek
+            </NavbarLink>
+            <NavbarLink href="#" className="!text-black">
               JurnWaste
             </NavbarLink>
-            <NavbarLink href="#"  className="!text-blue-950">
+            <NavbarLink href="#" className="!text-black">
               Panduan
+            </NavbarLink>
+            <NavbarLink href="/dashboard" className="!text-black">
+              Dashboard
             </NavbarLink>
           </NavbarCollapse>
         </Navbar>

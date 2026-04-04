@@ -7,11 +7,6 @@ import { Button } from "flowbite-react"
 export default function App() {
   return (
     <>
-      <div className="my-10">
-        <h1 className="text-center text-5xl">
-          <b>Welcome To FoodWise</b>
-        </h1>
-      </div>
       <section className="relative w-full h-screen min-h-[500px] overflow-hidden">
         {/* Background Image */}
         <img
@@ -53,7 +48,7 @@ export default function App() {
         </div>
       </section>
       <div className="relative text-center pt-9 pb-0 overflow-visible">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#047630] to-[#83D38F]"/>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#047630] to-[#83D38F]" />
         <h1 className="relative z-10 text-white text-5xl">
           <b>2025</b>
         </h1>
@@ -72,13 +67,17 @@ export default function App() {
           </div>
         </div>
       </div>
-      <div className="pb-24"/>
+      <div className="pb-24" />
       <div className="text-center py-30">
         <h1 className="text-8xl font-bold text-[#047630]">Ayo bergabung bersama kami !</h1>
         <p className="text-2xl mt-10 w-300 flex mx-auto">
           menjadi agen perubahan untuk masa depan yang lebih cerah, dan membantu
           mengurangi, mencegah dampak yang lebih besar di masa depan
         </p>
+          <br />
+          
+        <Button className="flex mx-auto">bergabung</Button>
+
       </div>
     </>
   );

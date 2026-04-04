@@ -9,7 +9,7 @@ import {
 export default function FooterComponent() {
   return (
     <>
-      <Footer container className="!bg-[#61A57B] mt-3">
+      <Footer container className="!bg-[#047630] mt-3">
         <div className="flex flex-wrap gap-5">
           <div style={{ color: "white" }}>
             <h5>FoodWise</h5>
