@@ -55,13 +55,16 @@ export default function NavbarComponent() {
             <NavbarToggle />
           </div>
           <NavbarCollapse>
+            <NavbarLink href="/" className="!text-black"> 
+              Beranda
+            </NavbarLink>
             <NavbarLink href="/dashboard"  className="!text-blue-950">
               Dashboard
             </NavbarLink>
             <NavbarLink href="#"  className="!text-blue-950">
               JurnWaste
             </NavbarLink>
-            <NavbarLink href="#"  className="!text-blue-950">
+            <NavbarLink href="/panduan"  className="!text-blue-950">
               Panduan
             </NavbarLink>
           </NavbarCollapse>
