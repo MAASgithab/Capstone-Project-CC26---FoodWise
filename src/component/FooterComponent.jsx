@@ -9,17 +9,6 @@ import {
 export default function FooterComponent() {
   return (
     <>
-<<<<<<< HEAD
-      <Footer container className="!bg-[#047630] mt-3">
-        <div className="flex flex-wrap gap-5">
-          <div style={{ color: "white" }}>
-            <h5>FoodWise</h5>
-            <p>
-              Food waste Indonesia adalah platform yang mengedukasi dan membantu
-              cara mengelola makanan sisa dan mengurangi food waste. Mulai lah
-              bergabung bersama kami!
-            </p>
-=======
       <Footer container className="rounded-none !bg-[#0b7a2f] text-white mt-5">
         <div className="mx-auto w-full px-8 py-6">
           {/* Wrapper utama */}
@@ -45,7 +34,6 @@ export default function FooterComponent() {
                 Jawa Barat
               </p>
             </div>
->>>>>>> 7fd654c6444cb7143629fee999aa1f1f0825cb5a
           </div>
 
           {/* Garis bawah */}

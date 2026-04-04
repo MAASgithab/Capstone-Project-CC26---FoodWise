@@ -29,28 +29,19 @@ export default function NavbarComponent() {
             </span>
           </NavbarBrand>
           <NavbarCollapse>
-<<<<<<< HEAD
-            <NavbarLink href="#" className="!text-black">
-              Beranda
-=======
             <NavbarLink href="/" className="!text-black"> 
               Beranda
             </NavbarLink>
             <NavbarLink href="/dashboard"  className="!text-blue-950">
               Dashboard
->>>>>>> 7fd654c6444cb7143629fee999aa1f1f0825cb5a
             </NavbarLink>
             <NavbarLink href="#" className="!text-black">
               Projek
             </NavbarLink>
-            <NavbarLink href="#" className="!text-black">
+            <NavbarLink href="/Jurnal" className="!text-blue-950">
               JurnWaste
             </NavbarLink>
-<<<<<<< HEAD
-            <NavbarLink href="#" className="!text-black">
-=======
             <NavbarLink href="/panduan"  className="!text-blue-950">
->>>>>>> 7fd654c6444cb7143629fee999aa1f1f0825cb5a
               Panduan
             </NavbarLink>
             <NavbarLink href="/dashboard" className="!text-black">

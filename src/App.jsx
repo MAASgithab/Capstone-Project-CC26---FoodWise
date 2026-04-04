@@ -1,7 +1,7 @@
 import React from "react";
 import CarouselComponent from "./component/CarouselComponent";
 import NavbarComponent from "./component/NavbarComponent";
-import CardProduct from "./component/CardProduct";
+import CardProduct from "./component/Dashboard/CardProduct";
 import { Button } from "flowbite-react";
 
 export default function App() {
@@ -47,39 +47,6 @@ export default function App() {
           </div>
         </div>
       </section>
-<<<<<<< HEAD
-      <div className="relative text-center pt-9 pb-0 overflow-visible">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#047630] to-[#83D38F]" />
-        <h1 className="relative z-10 text-white text-5xl">
-          <b>2025</b>
-        </h1>
-        <div className="relative z-10 flex justify-between mx-50 text-5xl text-center mt-5 translate-y-14">
-          <div className="bg-white shadow-xl px-5 py-5 rounded-xl">
-            <h1><b>{">"} 40</b></h1>
-            <span>Ton sampah</span>
-          </div>
-          <div className="bg-white shadow-xl px-5 py-5 rounded-xl">
-            <h1><b>61-125</b></h1>
-            <span>Juta orang terdampak</span>
-          </div>
-          <div className="bg-white shadow-xl px-5 py-5 rounded-xl">
-            <h1><b>Rp.500</b></h1>
-            <span>Trilliun/tahun</span>
-          </div>
-        </div>
-      </div>
-      <div className="pb-24" />
-      <div className="text-center py-30">
-        <h1 className="text-8xl font-bold text-[#047630]">Ayo bergabung bersama kami !</h1>
-        <p className="text-2xl mt-10 w-300 flex mx-auto">
-          menjadi agen perubahan untuk masa depan yang lebih cerah, dan membantu
-          mengurangi, mencegah dampak yang lebih besar di masa depan
-        </p>
-          <br />
-          
-        <Button className="flex mx-auto">bergabung</Button>
-
-=======
 
       <div>
         <div className="relative text-center pt-6 pb-0 overflow-visible">
@@ -126,7 +93,6 @@ export default function App() {
             membantu mengurangi, mencegah dampak yang lebih besar di masa depan
           </p>
         </div>
->>>>>>> 7fd654c6444cb7143629fee999aa1f1f0825cb5a
       </div>
     </>
   );

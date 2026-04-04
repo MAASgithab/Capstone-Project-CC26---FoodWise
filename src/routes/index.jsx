@@ -3,6 +3,7 @@ import Template from "../templates";
 import Dashboard from "../pages/Dashboard";
 import App from "../App";
 import Panduan from "../pages/Panduan";
+import Jurnal from "../pages/Jurnal";
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
                 path: "/panduan",
                 element: <Panduan />
             },
+            {
+                path: "jurnal",
+                element:<Jurnal/>
+            }
         ]
     }
 ]);
