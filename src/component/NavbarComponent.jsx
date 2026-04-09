@@ -44,9 +44,6 @@ export default function NavbarComponent() {
             <NavbarLink href="/panduan"  className="!text-blue-950">
               Panduan
             </NavbarLink>
-            <NavbarLink href="/dashboard" className="!text-black">
-              Dashboard
-            </NavbarLink>
           </NavbarCollapse>
         </Navbar>
       </div>

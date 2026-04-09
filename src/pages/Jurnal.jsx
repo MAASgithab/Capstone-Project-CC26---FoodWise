@@ -1,110 +1,196 @@
-import React from "react";
+import React, { useState } from 'react';
 
 export default function Jurnal() {
-    return (
-        <div className="max-w-5xl mx-auto px-6 py-10 font-sans text-black">
-            <h1 className="text-2xl font-bold mb-10">Jurnal FoodWise &gt;&gt;</h1>
+  // State form sederhana
+  const [namaBahan, setNamaBahan] = useState('');
+  const [kategori, setKategori] = useState('');
+  const [tanggalBeli, setTanggalBeli] = useState('');
+  const [tanggalKadaluarsa, setTanggalKadaluarsa] = useState('');
+  const [jumlah, setJumlah] = useState('');
+  const [metode, setMetode] = useState('');
+  const [catatan, setCatatan] = useState('');
 
-            <div className="flex flex-col md:flex-row justify-between items-start gap-8 mb-14">
-                <div className="border border-gray-300 rounded-sm shadow-sm w-full md:w-64">
-                    <h2 className="text-sm font-bold border-b border-gray-300 px-4 py-2">Total Point</h2>
-                    <div className="flex justify-between items-center px-4 py-6">
-                        <div className="flex flex-col items-center">
-                            <span className="text-4xl font-bold">87</span>
-                            <span className="text-xs font-bold mt-1">Point</span>
-                        </div>
-                        <div className="relative w-20 h-20">
-                            <svg viewBox="0 0 24 24" className="w-12 h-12 text-yellow-300 absolute bottom-0 left-0 drop-shadow-md" fill="#FDE047" stroke="#EAB308" strokeWidth="0.5">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                            <svg viewBox="0 0 24 24" className="w-16 h-16 text-yellow-400 absolute top-0 right-0 z-10 drop-shadow-md" fill="#FACC15" stroke="#CA8A04" strokeWidth="0.5">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+  // Fungsi submit sederhana
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Validasi sederhana
+    if (!namaBahan || !kategori || !tanggalBeli || !tanggalKadaluarsa || !jumlah || !metode) {
+      alert('Semua field wajib diisi!');
+      return;
+    }
 
-                <div className="border border-gray-300 rounded-sm shadow-sm w-full md:w-80 flex flex-col items-center p-5">
-                    <h2 className="text-sm font-bold border-b border-gray-300 w-full text-center pb-2 mb-5">Sampah terkumpul</h2>
-                    <div className="text-4xl font-normal mb-2">64Kg</div>
-                    <div className="text-green-500 text-5xl mb-5">🌱</div>
-                    <div className="w-4/5 bg-white border border-gray-300 rounded-full h-5 flex items-center px-1">
-                        <div className="bg-[#00C652] h-3.5 rounded-full w-1/4"></div>
-                    </div>
-                </div>
-            </div>
+    // Simpan data (bisa disesuaikan dengan kebutuhan)
+    const data = {
+      namaBahan,
+      kategori,
+      tanggalBeli,
+      tanggalKadaluarsa,
+      jumlah,
+      metode,
+      catatan
+    };
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
-                <div className="border border-gray-300 shadow-sm flex flex-col items-center">
-                    <div className="bg-[#84D494] w-full text-white font-bold py-3 text-center text-base">Bokashi</div>
-                    <div className="py-10 flex flex-col items-center">
-                        <span className="text-4xl font-normal mb-3">3 Kg</span>
-                        <span className="text-xs text-gray-500">Sedang di Fermentasi</span>
-                    </div>
-                </div>
-                <div className="border border-gray-300 shadow-sm flex flex-col items-center">
-                    <div className="bg-[#84D494] w-full text-white font-bold py-3 text-center text-base">Kompos</div>
-                    <div className="py-10 flex flex-col items-center">
-                        <span className="text-4xl font-normal mb-3">50 Kg</span>
-                        <span className="text-xs text-gray-500">Sedang di Fermentasi</span>
-                    </div>
-                </div>
-                <div className="border border-gray-300 shadow-sm flex flex-col items-center">
-                    <div className="bg-[#84D494] w-full text-white font-bold py-3 text-center text-base">Eco-enzyme</div>
-                    <div className="py-10 flex flex-col items-center">
-                        <span className="text-4xl font-normal mb-3">11 Kg</span>
-                        <span className="text-xs text-gray-500">Sedang di Fermentasi</span>
-                    </div>
-                </div>
-            </div>
+    console.log('Data form:', data);
+    alert('Form berhasil disubmit!');
+    
+    // Reset form setelah submit
+    handleReset();
+  };
 
-            <div className="border border-gray-200 p-8 mb-16 shadow-sm">
-                <div className="flex items-center mb-8">
-                    <span className="font-bold text-sm mr-4 whitespace-nowrap">Input bahan</span>
-                    <div className="h-px bg-gray-200 w-full"></div>
-                </div>
+  // Fungsi reset sederhana
+  const handleReset = () => {
+    setNamaBahan('');
+    setKategori('');
+    setTanggalBeli('');
+    setTanggalKadaluarsa('');
+    setJumlah('');
+    setMetode('');
+    setCatatan('');
+  };
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
-                    <div className="flex items-center">
-                        <label className="text-sm w-32 shrink-0">Nama bahan :</label>
-                        <input type="text" className="bg-[#E8E8E8] h-10 w-full outline-none px-3" />
-                    </div>
-                    <div className="flex items-center">
-                        <label className="text-sm w-32 shrink-0">Kadaluarsa :</label>
-                        <input type="text" className="bg-[#E8E8E8] h-10 w-full outline-none px-3" />
-                    </div>
-                    <div className="flex items-center">
-                        <label className="text-sm w-32 shrink-0">Kategori :</label>
-                        <input type="text" className="bg-[#E8E8E8] h-10 w-full outline-none px-3" />
-                    </div>
-                    <div className="hidden md:block"></div>
-                    <div className="flex items-center">
-                        <label className="text-sm w-32 shrink-0">Tanggal beli :</label>
-                        <input type="text" className="bg-[#E8E8E8] h-10 w-full outline-none px-3" />
-                    </div>
-                    <div className="flex justify-end items-end mt-4 md:mt-0">
-                        <button className="bg-[#00E359] text-white text-sm font-bold py-2 px-8 rounded hover:bg-green-500 transition-colors">
-                            simpan
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <h2 className="text-xl font-bold mb-8">Produk kami &gt;&gt;</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-                <div className="flex flex-col items-center">
-                    <div className="bg-[#D9D9D9] w-full aspect-square mb-4"></div>
-                    <span className="font-bold text-sm">Nama produk</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="bg-[#D9D9D9] w-full aspect-square mb-4"></div>
-                    <span className="font-bold text-sm">Nama produk</span>
-                </div>
-                <div className="flex flex-col items-center">
-                    <div className="bg-[#D9D9D9] w-full aspect-square mb-4"></div>
-                    <span className="font-bold text-sm">Nama produk</span>
-                </div>
-            </div>
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-10 font-sans text-black">
+      <h1 className="text-2xl font-bold mb-10">Form Jurnal FoodWise</h1>
+      
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
+        {/* Field Nama Bahan */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Nama bahan :</label>
+          <input 
+            type="text"
+            value={namaBahan}
+            onChange={(e) => setNamaBahan(e.target.value)}
+            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
+            required
+          />
         </div>
-    );
+
+        {/* Field Kategori */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Kategori :</label>
+          <select 
+            value={kategori}
+            onChange={(e) => setKategori(e.target.value)}
+            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
+            required
+          >
+            <option value="">Pilih kategori</option>
+            <option value="sisa_makanan">Sisa Makanan</option>
+            <option value="daun_kering">Daun Kering</option>
+            <option value="kertas">Kertas</option>
+            <option value="kardus">Kardus</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        {/* Field Tanggal Beli */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Tanggal beli :</label>
+          <input 
+            type="date"
+            value={tanggalBeli}
+            onChange={(e) => setTanggalBeli(e.target.value)}
+            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
+            required
+          />
+        </div>
+
+        {/* Field Tanggal Kadaluarsa */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Kadaluarsa :</label>
+          <input 
+            type="date"
+            value={tanggalKadaluarsa}
+            onChange={(e) => setTanggalKadaluarsa(e.target.value)}
+            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
+            required
+          />
+        </div>
+
+        {/* Field Jumlah */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Jumlah :</label>
+          <input 
+            type="number"
+            value={jumlah}
+            onChange={(e) => setJumlah(e.target.value)}
+            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
+            required
+            min="0"
+            step="0.1"
+          />
+        </div>
+
+        {/* Field Metode Pengolahan */}
+        <div className="flex items-center">
+          <label className="text-sm w-32 shrink-0">Metode :</label>
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="kompos"
+                name="metode"
+                value="kompos"
+                checked={metode === 'kompos'}
+                onChange={(e) => setMetode(e.target.value)}
+              />
+              <label htmlFor="kompos" className="text-sm font-medium">Kompos</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="bokashi"
+                name="metode"
+                value="bokashi"
+                checked={metode === 'bokashi'}
+                onChange={(e) => setMetode(e.target.value)}
+              />
+              <label htmlFor="bokashi" className="text-sm font-medium">Bokashi</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                id="eco-enzyme"
+                name="metode"
+                value="eco-enzyme"
+                checked={metode === 'eco-enzyme'}
+                onChange={(e) => setMetode(e.target.value)}
+              />
+              <label htmlFor="eco-enzyme" className="text-sm font-medium">Eco Enzyme</label>
+            </div>
+          </div>
+        </div>
+
+        {/* Field Catatan Tambahan */}
+        <div className="md:col-span-2 flex items-center">
+          <label className="text-sm w-32 shrink-0">Catatan :</label>
+          <textarea 
+            value={catatan}
+            onChange={(e) => setCatatan(e.target.value)}
+            className="bg-[#E8E8E8] h-20 w-full outline-none px-3 py-2"
+            placeholder="Catatan tambahan (opsional)"
+          />
+        </div>
+
+        {/* Tombol Submit dan Reset */}
+        <div className="hidden md:block"></div>
+        <div className="flex justify-end items-end mt-4 md:mt-0 gap-3">
+          <button 
+            type="button"
+            onClick={handleReset}
+            className="bg-[#e30000] text-white text-sm font-bold py-2 px-8 rounded hover:bg-red-600 transition-colors"
+          >
+            Reset
+          </button>
+          <button 
+            type="submit"
+            className="bg-[#00E359] text-white text-sm font-bold py-2 px-8 rounded hover:bg-green-600 transition-colors"
+          >
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
