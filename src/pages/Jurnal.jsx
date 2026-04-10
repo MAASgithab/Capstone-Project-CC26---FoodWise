@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Jurnal() {
-   // State untuk menyimpan nilai setiap field form
+  // State untuk menyimpan nilai setiap field form
   const [formData, setFormData] = useState({
     aktivitas: "Masak",    // Pilihan masak atau makan
     bersisa: "Ya",         // Apakah makanan bersisa
@@ -11,6 +12,64 @@ export default function Jurnal() {
     berat: "50",           // Berat makanan
     beratSatuan: "kg",     // Satuan berat (gr atau kg)
   });
+
+  // State untuk menyimpan kategori dari API
+  const [categories, setCategories] = useState([]);
+  
+  // State untuk menampilkan loading saat fetch
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // State untuk menyimpan pesan error
+  const [error, setError] = useState(null);
+  
+  // Hook untuk navigasi halaman (redirect jika belum login)
+  const navigate = useNavigate();
+
+  // Fungsi untuk mengecek apakah user sudah login
+  // Dijalankan ketika component pertama kali ditampilkan
+  useEffect(() => {
+    // Ambil token dari localStorage untuk melihat apakah user sudah login
+    const token = localStorage.getItem("token");
+    
+    // Jika tidak ada token, redirect ke halaman login
+    if (!token) {
+      alert("Anda harus login terlebih dahulu!");
+      navigate("/"); // Redirect ke halaman utama
+      return;
+    }
+
+    // Fetch kategori dari API
+    fetchCategories(token);
+  }, []); // [] berarti function hanya dijalankan sekali saat component mount
+
+  // Fungsi untuk mengambil data kategori dari API
+  const fetchCategories = async (token) => {
+    try {
+      // Buat request GET ke endpoint API untuk mengambil kategori
+      const response = await fetch("http://localhost:3000/api/categories", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Kirim token untuk autentikasi
+          "Content-Type": "application/json", // Tipe data yang dikirim
+        },
+      });
+
+      // Cek apakah response berhasil (status 200-299)
+      if (!response.ok) {
+        throw new Error("Gagal mengambil kategori");
+      }
+
+      // Ubah response JSON menjadi object JavaScript
+      const data = await response.json();
+      
+      // Simpan kategori ke state
+      setCategories(data.data || []); // Simpan data.data atau array kosong jika tidak ada
+    } catch (err) {
+      // Jika terjadi error, tampilkan pesan error
+      console.error("Error fetching categories:", err);
+      setError("Gagal mengambil data kategori");
+    }
+  };
 
   // Fungsi untuk mengupdate state ketika user mengubah nilai field
   const handleChange = (e) => {
@@ -36,21 +95,141 @@ export default function Jurnal() {
   };
 
   // Fungsi untuk handle submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Mencegah halaman refresh saat submit
-    console.log("Data yang dikirim:", formData); // Tampilkan data di console
-    alert("Data berhasil disimpan!"); // Notifikasi ke user
+    
+    // Ambil token dari localStorage untuk autentikasi ke API
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Session expired, silakan login kembali!");
+      navigate("/");
+      return;
+    }
+
+    // Mulai loading
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Cari kategori berdasarkan nama tindakan
+      // Misalnya: jika tindakan = "Kompos", maka cari kategori dengan nama "Kompos"
+      const selectedCategory = categories.find(
+        (cat) => cat.name === formData.tindakan
+      );
+
+      // Jika kategori tidak ditemukan
+      if (!selectedCategory) {
+        setError("Kategori tidak ditemukan");
+        setIsLoading(false);
+        return;
+      }
+
+      // Konversi berat ke format yang dibutuhkan API
+      // Jika satuan adalah "gr", ubah ke "kg" dengan membagi 1000
+      const wasteWeight = parseFloat(formData.berat);
+      const weightUnit = formData.beratSatuan;
+
+      // Persiapkan data untuk dikirim ke API
+      const requestData = {
+        activity: formData.aktivitas.toLowerCase(), // "Masak" -> "masak"
+        has_leftover: formData.bersisa === "Ya", // Ubah "Ya"/"Tidak" menjadi boolean
+        category_id: selectedCategory.id, // ID kategori berdasarkan tindakan
+        finished_at: formData.jam || null, // Waktu selesai makan
+        waste_weight: wasteWeight, // Berat sampah
+        weight_unit: weightUnit, // Satuan berat
+      };
+
+      // Kirim data ke API menggunakan fetch POST
+      const response = await fetch("http://localhost:3000/api/journals", {
+        method: "POST", // Metode HTTP POST untuk menambah data baru
+        headers: {
+          "Authorization": `Bearer ${token}`, // Kirim token untuk autentikasi
+          "Content-Type": "application/json", // Tipe data yang dikirim
+        },
+        body: JSON.stringify(requestData), // Ubah requestData menjadi string JSON
+      });
+
+      // Cek apakah response berhasil
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Gagal menyimpan jurnal");
+      }
+
+      // Ubah response JSON menjadi object JavaScript
+      const resultData = await response.json();
+
+      // Siapkan data yang akan disimpan ke localStorage
+      const journalEntry = {
+        id: resultData.data.id, // ID dari API
+        kategori: selectedCategory.name, // Nama kategori/tindakan
+        berat: wasteWeight, // Berat sampah
+        satuan: weightUnit, // Satuan berat
+        waktu: formData.jam, // Waktu selesai makan
+        aktivitas: formData.aktivitas, // Aktivitas (Masak/Makan)
+        tanggal: new Date().toISOString(), // Tanggal dan waktu saat ini
+      };
+
+      // Ambil data jurnal yang sudah ada di localStorage
+      const existingJournals = JSON.parse(localStorage.getItem("journals")) || [];
+      
+      // Tambahkan data jurnal baru ke array
+      existingJournals.push(journalEntry);
+      
+      // Simpan array ke localStorage dengan key "journals"
+      localStorage.setItem("journals", JSON.stringify(existingJournals));
+
+      // Tambahkan poin ke user setiap kali submit jurnal
+      // Ambil total poin yang sudah ada dari localStorage, default 0 jika belum ada
+      const currentPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+      
+      // Tambahkan 5 poin setiap kali submit jurnal
+      const newPoints = currentPoints + 5;
+      
+      // Simpan poin yang sudah diupdate ke localStorage dengan key "totalPoints"
+      localStorage.setItem("totalPoints", newPoints.toString());
+
+      // Tampilkan notifikasi sukses
+      alert("Jurnal berhasil disimpan! +5 poin");
+      
+      // Reset form ke nilai awal
+      handleReset(e);
+    } catch (err) {
+      // Jika terjadi error, tampilkan pesan error
+      console.error("Error submitting journal:", err);
+      setError(err.message);
+      alert(`Error: ${err.message}`);
+    } finally {
+      // Selesai loading
+      setIsLoading(false);
+    }
   };
 
   // Fungsi untuk handle cancel
   const handleCancel = (e) => {
     e.preventDefault(); // Mencegah behavior default browser
-    alert("Dibatalkan!"); // Notifikasi ke user
+    
+    // Tampilkan konfirmasi ke user
+    if (window.confirm("Anda yakin ingin membatalkan?")) {
+      alert("Dibatalkan!"); // Notifikasi ke user
+      
+      // Reset form ke nilai awal
+      handleReset(e);
+      
+      // Kembali ke halaman dashboard
+      navigate("/dashboard");
+    }
   };
 
   return (
     // Container utama dengan styling card putih menggunakan TailwindCSS
     <div className="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow-md p-6">
+
+      {/* Tampilkan pesan error jika ada */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
 
       {/* Tag form HTML sebagai wrapper semua input */}
       <form onSubmit={handleSubmit}>
@@ -111,19 +290,36 @@ export default function Jurnal() {
             Anda apakan dengan makanan yang bersisa?
           </label>
 
-          {/* Dropdown HTML native untuk pilihan tindakan sisa makanan */}
-          <select
-            id="tindakan"
-            name="tindakan"
-            value={formData.tindakan}
-            onChange={handleChange}
-            className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
-          >
-            <option value="Kompos">Kompos</option>
-            <option value="Buang">Bokashi</option>
-            <option value="Simpan">Eco-Enzym</option>
-            <option value="Berikan">Buang</option>
-          </select>
+          {/* Dropdown yang menampilkan kategori dari API */}
+          {categories.length > 0 ? (
+            <select
+              id="tindakan"
+              name="tindakan"
+              value={formData.tindakan}
+              onChange={handleChange}
+              className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            >
+              {/* Iterasi setiap kategori dari API dan tampilkan sebagai option */}
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            // Jika kategori masih loading atau kosong, tampilkan dropdown static
+            <select
+              id="tindakan"
+              name="tindakan"
+              value={formData.tindakan}
+              onChange={handleChange}
+              className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            >
+              <option value="Kompos">Kompos</option>
+              <option value="Bokashi">Bokashi</option>
+              <option value="Eco-Enzym">Eco-Enzym</option>
+            </select>
+          )}
         </div>
 
         {/* ========== PERTANYAAN 4 ========== */}
@@ -193,7 +389,8 @@ export default function Jurnal() {
           {/* Tombol Cancel dengan warna merah */}
           <button
             onClick={handleCancel}
-            className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded cursor-pointer"
+            disabled={isLoading} // Disable tombol saat loading
+            className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded cursor-pointer disabled:opacity-50"
           >
             Cancel
           </button>
@@ -201,7 +398,8 @@ export default function Jurnal() {
           {/* Tombol Reset dengan warna abu-abu */}
           <button
             onClick={handleReset}
-            className="w-full py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded cursor-pointer"
+            disabled={isLoading} // Disable tombol saat loading
+            className="w-full py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded cursor-pointer disabled:opacity-50"
           >
             Reset
           </button>
@@ -209,9 +407,10 @@ export default function Jurnal() {
           {/* Tombol Submit dengan warna hijau gelap, type submit untuk trigger onSubmit form */}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-green-800 hover:bg-green-900 text-white font-bold rounded cursor-pointer"
+            disabled={isLoading} // Disable tombol saat loading
+            className="w-full py-2 px-4 bg-green-800 hover:bg-green-900 text-white font-bold rounded cursor-pointer disabled:opacity-50"
           >
-            Submit
+            {isLoading ? "Menyimpan..." : "Submit"} {/* Tampilkan teks berbeda saat loading */}
           </button>
 
         </div>

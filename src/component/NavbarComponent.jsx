@@ -12,6 +12,8 @@ import {
   NavbarToggle,
   Button,
 } from "flowbite-react";
+// import logoBrand from public folder
+import logoBrand from "/public/Foodwiseicons.png";
 
 export default function NavbarComponent() {
   return (
@@ -20,7 +22,7 @@ export default function NavbarComponent() {
         <Navbar fluid className="!bg-white sticky top-0 z-50">
           <NavbarBrand href="/">
             <img
-              src="/Foodwiseicons.png"
+              src={logoBrand}
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite React Logo"
             />
@@ -43,12 +45,12 @@ export default function NavbarComponent() {
             </NavbarLink>
           </NavbarCollapse>
           <NavbarCollapse>
-            <NavbarLink href="/"> 
+            <NavbarLink href="/pendaftaran"> 
               <Button>
                 Login
               </Button>
             </NavbarLink>
-            <NavbarLink href="/"> 
+            <NavbarLink href="/pendaftaran"> 
               <Button className="!bg-green-500">
                 Sign Up
               </Button>

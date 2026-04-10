@@ -1,21 +1,77 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import CardProduct from '../component/Dashboard/CardProduct'
 import { Progress } from "flowbite-react";
 
 export default function Dashboard() {
-  const totalPoint = 87;
+  // State untuk menyimpan total poin user yang dibaca dari localStorage
+  const [totalPoint, setTotalPoint] = useState(0);
 
-  // Data untuk kartu sampah terkumpul
-  const sampahKg = 0;
-  const maxKg = 1000;
-  const persentaseSampah = (sampahKg / maxKg) * 100; // Hitung persentase untuk progress bar
+  // State untuk menyimpan data fermentasi yang dihitung dari localStorage
+  const [fermentasiData, setFermentasiData] = useState([
+    { id: 1, nama: "Bokashi", kg: 0, status: "Sedang di Fermentasi" },
+    { id: 2, nama: "Kompos", kg: 0, status: "Sedang di Fermentasi" },
+    { id: 3, nama: "Eco-enzyme", kg: 0, status: "Sedang di Fermentasi" },
+  ]);
 
-  // Data fermentasi dalam array agar mudah di-render dengan map
-  const fermentasiData = [
-    { id: 1, nama: "Bokashi", kg: 3, status: "Sedang di Fermentasi" },
-    { id: 2, nama: "Kompos", kg: 50, status: "Sedang di Fermentasi" },
-    { id: 3, nama: "Eco-enzyme", kg: 11, status: "Sedang di Fermentasi" },
-  ];
+  // State untuk menyimpan total sampah terkumpul
+  const [sampahTotalKg, setSampahTotalKg] = useState(0);
+
+  // Fungsi untuk membaca data dan menghitung total dari localStorage
+  // Dijalankan ketika component pertama kali ditampilkan
+  useEffect(() => {
+    // ========== HITUNG POIN ==========
+    // Ambil total poin dari localStorage, default 0 jika belum ada
+    const storedPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+    
+    // Simpan poin ke state
+    setTotalPoint(storedPoints);
+
+    // ========== HITUNG SAMPAH ==========
+    // Ambil data journals dari localStorage
+    const journalsData = JSON.parse(localStorage.getItem("journals")) || [];
+
+    // Buat object untuk menampung total sampah per kategori
+    const fermentasiTotals = {
+      "Bokashi": 0,      // Total berat bokashi
+      "Kompos": 0,       // Total berat kompos
+      "Eco-enzyme": 0,   // Total berat eco-enzyme
+    };
+
+    // Loop setiap jurnal yang tersimpan
+    journalsData.forEach((journal) => {
+      // Ambil kategori dari journal
+      const kategori = journal.kategori;
+      
+      // Ambil berat sampah
+      const berat = journal.berat;
+      
+      // Ambil satuan berat (gr atau kg)
+      const satuan = journal.satuan;
+
+      // Ubah berat menjadi kg jika satuannya gr
+      // Jika satuan = "gr", maka bagi 1000 untuk menjadi kg
+      // Misal: 500 gr = 500 / 1000 = 0.5 kg
+      const beratKg = satuan === "gr" ? berat / 1000 : berat;
+
+      // Tambahkan berat ke kategori yang sesuai
+      if (fermentasiTotals[kategori] !== undefined) {
+        fermentasiTotals[kategori] += beratKg;
+      }
+    });
+
+    // Hitung total sampah dari semua kategori
+    const totalSampah = fermentasiTotals["Bokashi"] + fermentasiTotals["Kompos"] + fermentasiTotals["Eco-enzyme"];
+
+    // Update state fermentasiData dengan nilai yang dihitung
+    setFermentasiData([
+      { id: 1, nama: "Bokashi", kg: fermentasiTotals["Bokashi"], status: "Sedang di Fermentasi" },
+      { id: 2, nama: "Kompos", kg: fermentasiTotals["Kompos"], status: "Sedang di Fermentasi" },
+      { id: 3, nama: "Eco-enzyme", kg: fermentasiTotals["Eco-enzyme"], status: "Sedang di Fermentasi" },
+    ]);
+
+    // Update state total sampah
+    setSampahTotalKg(totalSampah);
+  }, []); // [] berarti effect hanya dijalankan sekali saat component mount
 
   // Data produk dalam array - gambar dikosongkan karena belum tersedia
   const produkData = [
@@ -23,6 +79,11 @@ export default function Dashboard() {
     { id: 2, nama: "Nama produk", gambar: "" },
     { id: 3, nama: "Nama produk", gambar: "" },
   ];
+
+  // Hitung persentase sampah untuk progress bar
+  // maxKg adalah target maksimal sampah yang ingin dikumpulkan
+  const maxKg = 1000;
+  const persentaseSampah = (sampahTotalKg / maxKg) * 100; // Hitung persentase untuk progress bar
 
   return (
     // Wrapper utama: lebar maksimal 480px, tengah layar, padding, background putih
@@ -71,8 +132,8 @@ export default function Dashboard() {
           {/* Judul kartu */}
           <p className="text-xl text-center mb-2">Sampah terkumpul</p>
 
-          {/* Angka kg sampah */}
-          <p className="text-2xl font-bold mb-2">{sampahKg} Kg</p>
+          {/* Angka kg sampah yang dihitung dari localStorage */}
+          <p className="text-2xl font-bold mb-2">{sampahTotalKg.toFixed(2)} Kg</p>
 
           {/* Baris ikon daun + progress bar */}
           <div className="flex items-center gap-2">
@@ -82,7 +143,7 @@ export default function Dashboard() {
             {/* Progress bar dari flowbite-react */}
             <div className="flex-1">
               <Progress
-                progress={persentaseSampah} // Nilai progress 0-100
+                progress={persentaseSampah} // Nilai progress 0-100 berdasarkan perhitungan
                 color="green" // Warna hijau
                 size="xl" // Ukuran kecil
               />

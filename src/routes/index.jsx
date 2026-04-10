@@ -4,6 +4,7 @@ import Dashboard from "../pages/Dashboard";
 import App from "../App";
 import Panduan from "../pages/Panduan";
 import Jurnal from "../pages/Jurnal";
+import Authentication from "../pages/Authentication";
 
 export const router = createBrowserRouter([
     {
@@ -25,7 +26,11 @@ export const router = createBrowserRouter([
             {
                 path: "jurnal",
                 element:<Jurnal/>
-            }
+            },
+            {
+                path:"/pendaftaran",
+                element: <Authentication />
+            },
         ]
     }
 ]);
