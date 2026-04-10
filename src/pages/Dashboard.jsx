@@ -84,7 +84,7 @@ export default function Dashboard() {
               <Progress
                 progress={persentaseSampah} // Nilai progress 0-100
                 color="green" // Warna hijau
-                size="sm" // Ukuran kecil
+                size="xl" // Ukuran kecil
               />
             </div>
           </div>
@@ -107,11 +107,9 @@ export default function Dashboard() {
             </div>
 
             {/* Body kartu: berat dan status */}
-            <div className="p-2 text-center">
+            <div className="p-2 py-10 text-center">
               {/* Angka berat */}
               <p className="text-xl font-bold my-1">{item.kg} Kg</p>
-              {/* Status fermentasi */}
-              <p className="text-xs text-gray-500">{item.status}</p>
             </div>
           </div>
         ))}
@@ -124,7 +122,7 @@ export default function Dashboard() {
       <h2 className="text-lg font-bold mb-4">Produk kami &gt;&gt;</h2>
 
       {/* Grid 3 kolom untuk kartu produk */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 mx-auto">
         {/* Loop data produk menggunakan map */}
         {produkData.map((item) => (
           <div

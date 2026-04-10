@@ -35,14 +35,28 @@ export default function NavbarComponent() {
             <NavbarLink href="/dashboard"  className="!text-blue-950">
               Dashboard
             </NavbarLink>
-            <NavbarLink href="#" className="!text-black">
-              Projek
-            </NavbarLink>
             <NavbarLink href="/Jurnal" className="!text-blue-950">
               JurnWaste
             </NavbarLink>
             <NavbarLink href="/panduan"  className="!text-blue-950">
               Panduan
+            </NavbarLink>
+          </NavbarCollapse>
+          <NavbarCollapse>
+            <NavbarLink href="/"> 
+              <Button>
+                Login
+              </Button>
+            </NavbarLink>
+            <NavbarLink href="/"> 
+              <Button className="!bg-green-500">
+                Sign Up
+              </Button>
+            </NavbarLink>
+            <NavbarLink href="/"> 
+              <Button className="!bg-red-500">
+                Logout
+              </Button>
             </NavbarLink>
           </NavbarCollapse>
         </Navbar>
