@@ -1,194 +1,219 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export default function Jurnal() {
-  // State form sederhana
-  const [namaBahan, setNamaBahan] = useState('');
-  const [kategori, setKategori] = useState('');
-  const [tanggalBeli, setTanggalBeli] = useState('');
-  const [tanggalKadaluarsa, setTanggalKadaluarsa] = useState('');
-  const [jumlah, setJumlah] = useState('');
-  const [metode, setMetode] = useState('');
-  const [catatan, setCatatan] = useState('');
+   // State untuk menyimpan nilai setiap field form
+  const [formData, setFormData] = useState({
+    aktivitas: "Masak",    // Pilihan masak atau makan
+    bersisa: "Ya",         // Apakah makanan bersisa
+    tindakan: "Kompos",    // Apa yang dilakukan dengan sisa makanan
+    jam: "",               // Jam selesai makan (HH:MM)
+    jamPeriode: "PM",      // AM atau PM
+    berat: "50",           // Berat makanan
+    beratSatuan: "kg",     // Satuan berat (gr atau kg)
+  });
 
-  // Fungsi submit sederhana
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Validasi sederhana
-    if (!namaBahan || !kategori || !tanggalBeli || !tanggalKadaluarsa || !jumlah || !metode) {
-      alert('Semua field wajib diisi!');
-      return;
-    }
-
-    // Simpan data (bisa disesuaikan dengan kebutuhan)
-    const data = {
-      namaBahan,
-      kategori,
-      tanggalBeli,
-      tanggalKadaluarsa,
-      jumlah,
-      metode,
-      catatan
-    };
-
-    console.log('Data form:', data);
-    alert('Form berhasil disubmit!');
-    
-    // Reset form setelah submit
-    handleReset();
+  // Fungsi untuk mengupdate state ketika user mengubah nilai field
+  const handleChange = (e) => {
+    const { name, value } = e.target; // Ambil name dan value dari elemen yang diubah
+    setFormData((prev) => ({
+      ...prev,       // Salin semua state sebelumnya
+      [name]: value, // Update hanya field yang diubah
+    }));
   };
 
-  // Fungsi reset sederhana
-  const handleReset = () => {
-    setNamaBahan('');
-    setKategori('');
-    setTanggalBeli('');
-    setTanggalKadaluarsa('');
-    setJumlah('');
-    setMetode('');
-    setCatatan('');
+  // Fungsi untuk mereset form ke nilai awal
+  const handleReset = (e) => {
+    e.preventDefault(); // Mencegah behavior default browser
+    setFormData({
+      aktivitas: "Masak",
+      bersisa: "Ya",
+      tindakan: "Kompos",
+      jam: "",
+      jamPeriode: "PM",
+      berat: "",
+      beratSatuan: "kg",
+    });
+  };
+
+  // Fungsi untuk handle submit form
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Mencegah halaman refresh saat submit
+    console.log("Data yang dikirim:", formData); // Tampilkan data di console
+    alert("Data berhasil disimpan!"); // Notifikasi ke user
+  };
+
+  // Fungsi untuk handle cancel
+  const handleCancel = (e) => {
+    e.preventDefault(); // Mencegah behavior default browser
+    alert("Dibatalkan!"); // Notifikasi ke user
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10 font-sans text-black">
-      <h1 className="text-2xl font-bold mb-10">Form Jurnal FoodWise</h1>
-      
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
-        {/* Field Nama Bahan */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Nama bahan :</label>
-          <input 
-            type="text"
-            value={namaBahan}
-            onChange={(e) => setNamaBahan(e.target.value)}
-            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
-            required
-          />
-        </div>
+    // Container utama dengan styling card putih menggunakan TailwindCSS
+    <div className="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow-md p-6">
 
-        {/* Field Kategori */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Kategori :</label>
-          <select 
-            value={kategori}
-            onChange={(e) => setKategori(e.target.value)}
-            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
-            required
+      {/* Tag form HTML sebagai wrapper semua input */}
+      <form onSubmit={handleSubmit}>
+
+        {/* ========== PERTANYAAN 1 ========== */}
+        <div className="mb-4">
+          {/* Label untuk dropdown aktivitas */}
+          <label
+            htmlFor="aktivitas"
+            className="block text-base font-bold text-black mb-1"
           >
-            <option value="">Pilih kategori</option>
-            <option value="sisa_makanan">Sisa Makanan</option>
-            <option value="daun_kering">Daun Kering</option>
-            <option value="kertas">Kertas</option>
-            <option value="kardus">Kardus</option>
-            <option value="lainnya">Lainnya</option>
+            Apa anda masak atau makan hari ini?
+          </label>
+
+          {/* Dropdown HTML native untuk pilihan Masak atau Makan */}
+          <select
+            id="aktivitas"
+            name="aktivitas"
+            value={formData.aktivitas}
+            onChange={handleChange}
+            className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          >
+            <option value="Masak">Masak</option>
+            <option value="Makan">Makan</option>
           </select>
         </div>
 
-        {/* Field Tanggal Beli */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Tanggal beli :</label>
-          <input 
-            type="date"
-            value={tanggalBeli}
-            onChange={(e) => setTanggalBeli(e.target.value)}
-            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
-            required
-          />
+        {/* ========== PERTANYAAN 2 ========== */}
+        <div className="mb-4">
+          {/* Label untuk dropdown bersisa */}
+          <label
+            htmlFor="bersisa"
+            className="block text-base font-bold text-black mb-1"
+          >
+            Apa makanan anda bersisa?
+          </label>
+
+          {/* Dropdown HTML native untuk pilihan Ya atau Tidak */}
+          <select
+            id="bersisa"
+            name="bersisa"
+            value={formData.bersisa}
+            onChange={handleChange}
+            className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          >
+            <option value="Ya">Ya</option>
+            <option value="Tidak">Tidak</option>
+          </select>
         </div>
 
-        {/* Field Tanggal Kadaluarsa */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Kadaluarsa :</label>
-          <input 
-            type="date"
-            value={tanggalKadaluarsa}
-            onChange={(e) => setTanggalKadaluarsa(e.target.value)}
-            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
-            required
-          />
+        {/* ========== PERTANYAAN 3 ========== */}
+        <div className="mb-4">
+          {/* Label untuk dropdown tindakan */}
+          <label
+            htmlFor="tindakan"
+            className="block text-base font-bold text-black mb-1"
+          >
+            Anda apakan dengan makanan yang bersisa?
+          </label>
+
+          {/* Dropdown HTML native untuk pilihan tindakan sisa makanan */}
+          <select
+            id="tindakan"
+            name="tindakan"
+            value={formData.tindakan}
+            onChange={handleChange}
+            className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+          >
+            <option value="Kompos">Kompos</option>
+            <option value="Buang">Bokashi</option>
+            <option value="Simpan">Eco-Enzym</option>
+            <option value="Berikan">Buang</option>
+          </select>
         </div>
 
-        {/* Field Jumlah */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Jumlah :</label>
-          <input 
-            type="number"
-            value={jumlah}
-            onChange={(e) => setJumlah(e.target.value)}
-            className="bg-[#E8E8E8] h-10 w-full outline-none px-3"
-            required
-            min="0"
-            step="0.1"
-          />
-        </div>
+        {/* ========== PERTANYAAN 4 ========== */}
+        <div className="mb-4">
+          {/* Label untuk input jam */}
+          <label
+            htmlFor="jam"
+            className="block text-base font-bold text-black mb-1"
+          >
+            pukul berapa anda selesai makan?
+          </label>
 
-        {/* Field Metode Pengolahan */}
-        <div className="flex items-center">
-          <label className="text-sm w-32 shrink-0">Metode :</label>
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="kompos"
-                name="metode"
-                value="kompos"
-                checked={metode === 'kompos'}
-                onChange={(e) => setMetode(e.target.value)}
-              />
-              <label htmlFor="kompos" className="text-sm font-medium">Kompos</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="bokashi"
-                name="metode"
-                value="bokashi"
-                checked={metode === 'bokashi'}
-                onChange={(e) => setMetode(e.target.value)}
-              />
-              <label htmlFor="bokashi" className="text-sm font-medium">Bokashi</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                id="eco-enzyme"
-                name="metode"
-                value="eco-enzyme"
-                checked={metode === 'eco-enzyme'}
-                onChange={(e) => setMetode(e.target.value)}
-              />
-              <label htmlFor="eco-enzyme" className="text-sm font-medium">Eco Enzyme</label>
-            </div>
+          {/* Baris input jam dan dropdown AM/PM sejajar menggunakan flexbox */}
+          <div className="flex items-center gap-2">
+            {/* Input teks HTML native untuk jam format HH:MM */}
+            <input
+              id="jam"
+              type="time"
+              name="jam"
+              placeholder="HH:MM"
+              value={formData.jam}
+              onChange={handleChange}
+              className="w-32 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
           </div>
         </div>
 
-        {/* Field Catatan Tambahan */}
-        <div className="md:col-span-2 flex items-center">
-          <label className="text-sm w-32 shrink-0">Catatan :</label>
-          <textarea 
-            value={catatan}
-            onChange={(e) => setCatatan(e.target.value)}
-            className="bg-[#E8E8E8] h-20 w-full outline-none px-3 py-2"
-            placeholder="Catatan tambahan (opsional)"
-          />
+        {/* ========== PERTANYAAN 5 ========== */}
+        <div className="mb-6">
+          {/* Label untuk input berat */}
+          <label
+            htmlFor="berat"
+            className="block text-base font-bold text-black mb-1"
+          >
+            Berapa beratnya (gr/kg)
+          </label>
+
+          {/* Baris input berat dan dropdown satuan sejajar menggunakan flexbox */}
+          <div className="flex items-center gap-2">
+            {/* Input number HTML native untuk berat */}
+            <input
+              id="berat"
+              type="number"
+              name="berat"
+              value={formData.berat}
+              onChange={handleChange}
+              className="w-32 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            />
+
+            {/* Dropdown HTML native untuk pilihan satuan berat */}
+            <select
+              name="beratSatuan"
+              value={formData.beratSatuan}
+              onChange={handleChange}
+              className="w-20 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
+            >
+              <option value="gr">gr</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
         </div>
 
-        {/* Tombol Submit dan Reset */}
-        <div className="hidden md:block"></div>
-        <div className="flex justify-end items-end mt-4 md:mt-0 gap-3">
-          <button 
-            type="button"
+        {/* ========== TOMBOL AKSI ========== */}
+        {/* Baris tombol Cancel, Reset, dan Submit sejajar */}
+        <div className="flex justify-between gap-3 mt-40">
+
+          {/* Tombol Cancel dengan warna merah */}
+          <button
+            onClick={handleCancel}
+            className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          {/* Tombol Reset dengan warna abu-abu */}
+          <button
             onClick={handleReset}
-            className="bg-[#e30000] text-white text-sm font-bold py-2 px-8 rounded hover:bg-red-600 transition-colors"
+            className="w-full py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded cursor-pointer"
           >
             Reset
           </button>
-          <button 
+
+          {/* Tombol Submit dengan warna hijau gelap, type submit untuk trigger onSubmit form */}
+          <button
             type="submit"
-            className="bg-[#00E359] text-white text-sm font-bold py-2 px-8 rounded hover:bg-green-600 transition-colors"
+            className="w-full py-2 px-4 bg-green-800 hover:bg-green-900 text-white font-bold rounded cursor-pointer"
           >
-            Simpan
+            Submit
           </button>
+
         </div>
       </form>
     </div>
