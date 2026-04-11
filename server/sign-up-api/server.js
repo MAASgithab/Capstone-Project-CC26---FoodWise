@@ -5,8 +5,11 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid'); 
 
 const app = express();
+<<<<<<< HEAD
 
 // CORS middleware - HARUS SEBELUM routes
+=======
+>>>>>>> parent of b34e4e0 (feat: update login/signup logic and fix CORS issues between auth and journal services)
 app.use(express.json());
 
 app.use((req, res, next) => {
