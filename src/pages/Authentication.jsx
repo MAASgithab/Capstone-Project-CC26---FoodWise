@@ -1,268 +1,168 @@
-import { useState, useEffect } from "react"; // Import useState dan useEffect untuk mengelola state dan side effects
-import { useNavigate } from "react-router-dom"; // Import useNavigate untuk redirect
-import logoBrand from "/public/Foodwiseicons.png";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // <-- Tambahan: Untuk pindah halaman
+import logoBrand from "/public/Foodwiseicons.png"; 
 import { MdOutlineEmail } from "react-icons/md";
 import { CiLock } from "react-icons/ci";
 import { FaRegUser } from "react-icons/fa";
-import { useAuth } from "../context/useAuth"; // Import custom hook untuk auth
 
-// Komponen utama halaman Authentication
 export default function Authentication() {
-  // State untuk menyimpan tab aktif: "signin" atau "signup"
   const [activeTab, setActiveTab] = useState("signin");
+  const navigate = useNavigate(); // <-- Inisialisasi fungsi navigasi
 
-  // State untuk menyimpan nilai input form
   const [formData, setFormData] = useState({
-    namaLengkap: "", // Hanya digunakan saat sign up
+    namaLengkap: "",
     email: "",
     password: "",
   });
 
-  // State untuk error message
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Get auth functions dari context
-  const { signup, signin, isLoading, user } = useAuth();
-
-  // Hook untuk redirect halaman
-  const navigate = useNavigate();
-
-  // Redirect ke dashboard jika user sudah login
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
-
-  // Fungsi untuk menangani perubahan input
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value }); // Update nilai field yang berubah
-    setErrorMessage(""); // Clear error message saat user mengetik
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Fungsi untuk menangani submit form
-  const handleSubmit = async () => {
-    // Reset error message
-    setErrorMessage("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Tentukan endpoint berdasarkan tab yang aktif
+    const endpoint = activeTab === "signin" ? "signin" : "signup";
 
     try {
-      // Validasi form
-      if (!formData.email || !formData.password) {
-        setErrorMessage("Email dan password harus diisi!");
-        return;
-      }
+      const response = await fetch(`http://localhost:3002/api/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          // namaLengkap: formData.namaLengkap, // Aktifkan jika backend sudah support field nama
+        }),
+      });
 
-      if (activeTab === "signin") {
-        // Logika login
-        const result = await signin(formData.email, formData.password);
+      const data = await response.json();
+
+      if (response.ok) {
+        // 1. Simpan token ke localStorage biar awet
+        localStorage.setItem("token", data.token);
         
-        if (!result.success) {
-          setErrorMessage(result.message);
-        } else {
-          // Jika berhasil, redirect ke dashboard (dilakukan di useEffect)
-        }
+        // 2. Kasih tau user
+        alert(activeTab === "signin" ? "Yeay! Login Berhasil!" : "Registrasi Berhasil!");
+
+        // 3. PINDAH KE DASHBOARD
+        navigate("/dashboard"); 
+
+        // 4. Opsional: Refresh kecil biar Navbar sadar ada token baru
+        window.location.reload();
       } else {
-        // Validasi sign up
-        if (!formData.namaLengkap) {
-          setErrorMessage("Nama lengkap harus diisi!");
-          return;
-        }
-
-        // Logika register
-        const result = await signup(
-          formData.namaLengkap,
-          formData.email,
-          formData.password
-        );
-
-        if (!result.success) {
-          setErrorMessage(result.message);
-        } else {
-          // Jika berhasil, redirect ke dashboard (dilakukan di useEffect)
-        }
+        alert("Gagal: " + data.error);
       }
     } catch (error) {
-      setErrorMessage("Terjadi kesalahan: " + error.message);
+      alert("Server mati atau koneksi ditolak (Cek CORS/Backend).");
     }
-  };
-
-  // Fungsi untuk ganti tab
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setErrorMessage(""); // Clear error saat ganti tab
-    setFormData({ // Reset form saat ganti tab
-      namaLengkap: "",
-      email: "",
-      password: "",
-    });
   };
 
   return (
-    // Wrapper utama: full layar, flex baris (kiri + kanan)
-    <div className="flex min-h-screen w-full">
-      {/* ===================== */}
+    <div className="flex min-h-screen w-full font-sans">
       {/* SISI KIRI: Form Login */}
-      {/* ===================== */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-12 py-16 bg-white">
-        {/* Judul halaman */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-1">
-          Silahkan {activeTab === "signin" ? "Login" : "Daftar"}
-        </h1>
-        {/* Subjudul */}
-        <p className="text-sm text-gray-500 mb-6">
-          {activeTab === "signin"
-            ? "Silahkan login dengan akun anda"
-            : "Silahkan daftar untuk membuat akun baru"}
-        </p>
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-8 py-16 bg-white">
 
-        {/* Tab Sign In / Sign Up */}
-        <div className="flex mb-8">
-          {/* Tombol Sign In */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-extrabold text-black mb-2 tracking-wide">
+            {activeTab === "signin" ? "Silahkan Login" : "Buat Akun Baru"}
+          </h1>
+          <p className="text-sm font-bold text-gray-400">
+            {activeTab === "signin" ? "silahkan login dengan akun anda" : "daftarkan diri anda untuk mulai"}
+          </p>
+        </div>
+
+        {/* Tab Toggle */}
+        <div className="flex border-2 border-green-700 rounded-full overflow-hidden mb-10">
           <button
-            onClick={() => handleTabChange("signin")} // Ganti tab ke signin saat diklik
-            className={`px-6 py-2 rounded-l-md border text-sm font-medium transition-all duration-200
-              ${
-                activeTab === "signin"
-                  ? "bg-green-700 text-white border-green-700" // Aktif: hijau gelap
-                  : "bg-white text-green-700 border-green-700 hover:bg-green-50" // Tidak aktif: outline
-              }`}
+            onClick={() => setActiveTab("signin")}
+            className={`px-10 py-1.5 font-bold text-lg transition-all duration-300 outline-none
+              ${activeTab === "signin" ? "bg-green-700 text-white" : "bg-white text-green-700 hover:bg-green-50"}`}
           >
-            Log In
+            sign in
           </button>
-
-          {/* Tombol Sign Up */}
           <button
-            onClick={() => handleTabChange("signup")} // Ganti tab ke signup saat diklik
-            className={`px-6 py-2 rounded-r-md border text-sm font-medium transition-all duration-200
-              ${
-                activeTab === "signup"
-                  ? "bg-green-700 text-white border-green-700" // Aktif: hijau gelap
-                  : "bg-white text-green-700 border-green-700 hover:bg-green-50" // Tidak aktif: outline
-              }`}
+            onClick={() => setActiveTab("signup")}
+            className={`px-10 py-1.5 font-bold text-lg transition-all duration-300 outline-none
+              ${activeTab === "signup" ? "bg-green-700 text-white" : "bg-white text-green-700 hover:bg-green-50"}`}
           >
-            Sign Up
+            sign up
           </button>
         </div>
 
-        {/* Error Message */}
-        {errorMessage && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-            {errorMessage}
-          </div>
-        )}
-
-        {/* ===================== */}
-        {/* FORM INPUT            */}
-        {/* ===================== */}
-        <div className="flex flex-col gap-4 max-w-sm">
-          {/* Field Nama Lengkap - hanya muncul saat tab signup aktif */}
+        {/* Form Inputs */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full max-w-[320px]">
+          
           {activeTab === "signup" && (
-            <div className="flex items-center border border-gray-300 rounded-lg px-3 py-3 gap-3">
-              {/* Ikon user */}
-              <FaRegUser />
-              {/* Garis pemisah vertikal */}
-              <div className="w-px h-5 bg-gray-300" />
-              {/* Input nama lengkap */}
+            <div className="flex items-center border border-gray-500 rounded-lg h-12 bg-white overflow-hidden focus-within:border-green-600 transition-all">
+              <div className="w-12 h-full flex-shrink-0 flex items-center justify-center text-gray-500">
+                <FaRegUser className="text-lg" />
+              </div>
+              <div className="h-6 w-[1px] bg-gray-400"></div>
               <input
                 type="text"
                 name="namaLengkap"
                 placeholder="Nama lengkap"
+                required={activeTab === "signup"}
                 value={formData.namaLengkap}
                 onChange={handleChange}
-                disabled={isLoading}
-                className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent disabled:opacity-50"
+                className="flex-1 h-full px-4 outline-none text-sm text-gray-700 font-medium"
               />
             </div>
           )}
 
-          {/* Field Email */}
-          <div className="flex items-center border border-gray-300 rounded-lg px-3 py-3 gap-3">
-            {/* Ikon email */}
-            <MdOutlineEmail />
-            {/* Garis pemisah vertikal */}
-            <div className="w-px h-5 bg-gray-300" />
-            {/* Input email */}
+          <div className="flex items-center border border-gray-500 rounded-lg h-12 bg-white overflow-hidden focus-within:border-green-600 transition-all">
+            <div className="w-12 h-full flex-shrink-0 flex items-center justify-center text-gray-500">
+              <MdOutlineEmail className="text-xl" />
+            </div>
+            <div className="h-6 w-[1px] bg-gray-400"></div>
             <input
               type="email"
               name="email"
               placeholder="Email"
+              required
               value={formData.email}
               onChange={handleChange}
-              disabled={isLoading}
-              className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent disabled:opacity-50"
+              className="flex-1 h-full px-4 outline-none text-sm text-gray-700 font-medium"
             />
           </div>
 
-          {/* Field Password */}
-          <div className="flex items-center border border-gray-300 rounded-lg px-3 py-3 gap-3">
-            {/* Ikon gembok */}
-            <CiLock />
-            {/* Garis pemisah vertikal */}
-            <div className="w-px h-5 bg-gray-300" />
-            {/* Input password */}
+          <div className="flex items-center border border-gray-500 rounded-lg h-12 bg-white overflow-hidden focus-within:border-green-600 transition-all">
+            <div className="w-12 h-full flex-shrink-0 flex items-center justify-center text-gray-500">
+              <CiLock className="text-xl font-bold" />
+            </div>
+            <div className="h-6 w-[1px] bg-gray-400"></div>
             <input
               type="password"
               name="password"
               placeholder="Password"
+              required
               value={formData.password}
               onChange={handleChange}
-              disabled={isLoading}
-              className="flex-1 outline-none text-sm text-gray-700 placeholder-gray-400 bg-transparent disabled:opacity-50"
+              className="flex-1 h-full px-4 outline-none text-sm text-gray-700 font-medium"
             />
           </div>
 
-          <div>
-            <p className="text-sm text-gray-600">
-              {activeTab === "signin"
-                ? "Belum punya akun? "
-                : "Sudah punya akun? "}
-              <button
-                onClick={() => handleTabChange(activeTab === "signin" ? "signup" : "signin")}
-                className="text-green-500 hover:underline"
-                disabled={isLoading}
-              >
-                {activeTab === "signin" ? "Daftar di sini" : "Login di sini"}
-              </button>
-            </p>
+          <div className="flex justify-center mt-4">
+            <button
+              type="submit"
+              className="bg-[#85b991] hover:bg-[#6ba077] text-white font-bold text-xl py-2.5 px-12 rounded-full transition-all duration-200 shadow-sm active:scale-95"
+            >
+              Continue
+            </button>
           </div>
-
-          {/* Tombol Continue / Submit */}
-          <button
-            onClick={handleSubmit} // Panggil fungsi submit saat diklik
-            disabled={isLoading}
-            className="mt-2 bg-green-400 hover:bg-green-500 text-white font-semibold py-3 px-8 rounded-full self-start transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Loading..." : "Continue"}
-          </button>
-        </div>
+        </form>
       </div>
 
-      {/* ========================= */}
-      {/* SISI KANAN: Branding Panel */}
-      {/* ========================= */}
-      <div className="min-h-screen flex w-1/2 bg-green-800 flex-col items-center justify-center px-12 text-center gap-8">
-        {/* Logo FoodWise */}
-        <div className="flex flex-col items-center gap-4">
-          {/* Ikon logo: kombinasi otak dan daun */}
-          {/* Lingkaran latar belakang transparan */}
-          <div className="flex items-center justify-center">
-            {/* SVG ikon otak + daun */}
-            <img src={logoBrand} alt="FoodWise Logo" className="w-32 h-16 rounded-full" />
-          </div>
-          {/* Teks logo FoodWise */}
-          <div className="text-3xl font-bold">
-            {/* "Food" berwarna putih, "Wise" berwarna hijau muda */}
-            <span className="text-white">Food</span>
-            <span className="text-green-300">Wise</span>
-          </div>
+      {/* SISI KANAN: Branding */}
+      <div className="hidden lg:flex w-1/2 bg-[#1b5e3a] flex-col items-center justify-center px-16 text-center">
+        <div className="flex flex-col items-center mb-8">
+          <img src={logoBrand} alt="FoodWise Logo" className="w-80 h-auto object-contain" />
         </div>
-        {/* Tagline / kutipan motivasi */}
-        <p className="text-white text-lg leading-relaxed max-w-xs">
-          "Mulai kebiasaan baru yang lebih sehat untuk dirimu dan lingkungan
-          dengan memantau makananmu"
+        <p className="text-white text-[1.1rem] leading-relaxed max-w-md font-medium tracking-wide italic">
+          “Mulai kebiasa baru yang lebih sehat untuk dirimu dan lingkungan dengan memantau makananmu”
         </p>
       </div>
     </div>
   );
 }
-
