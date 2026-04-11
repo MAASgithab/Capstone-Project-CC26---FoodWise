@@ -48,7 +48,6 @@ export default function Authentication() {
         // 3. PINDAH KE DASHBOARD
         navigate("/dashboard"); 
 
-        // 4. Opsional: Refresh kecil biar Navbar sadar ada token baru
         window.location.reload();
       } else {
         alert("Gagal: " + data.error);
