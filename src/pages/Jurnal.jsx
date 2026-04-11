@@ -6,18 +6,19 @@ export default function Jurnal() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // State tetep sama sesuai tampilan lu
+  // 1. STATE UNTUK FORM
   const [formData, setFormData] = useState({
     aktivitas: "Masak",
     bersisa: "Ya",
     tindakan: "Kompos",
-    jam: "", // Ini tetep ada buat input manual lu
+    jam: "",
     jamPeriode: "PM",
     berat: "50",
     beratSatuan: "kg",
   });
 
-  const [categories] = useState([
+  // 2. STATE UNTUK KATEGORI (Ambil dari Backend)
+  const [categories, setCategories] = useState([
     { id: 1, name: "Kompos" },
     { id: 2, name: "Bokashi" },
     { id: 3, name: "Eco-Enzym" },
@@ -26,12 +27,31 @@ export default function Jurnal() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Proteksi Login
+  // 3. FUNGSI AMBIL KATEGORI DARI BACKEND
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("http://localhost:5000/api/categories", {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const result = await response.json();
+        if (result.success) {
+          setCategories(result.data); // Pakai data dari database backend
+        }
+      } catch (error) {
+        console.error("Gagal ambil kategori dari backend, pakai data manual:", error);
+      }
+    };
+
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Anda harus login terlebih dahulu!");
       navigate("/");
+    } else {
+      fetchCategories(); // Jalankan ambil data kategori
     }
   }, [navigate]);
 
@@ -52,27 +72,22 @@ export default function Jurnal() {
     e.preventDefault();
     setIsLoading(true);
 
-    // KUNCI PER AKUN
     const userEmail = user?.email || "guest";
 
     setTimeout(() => {
-      // 1. Ambil Waktu Sekarang buat History (Otomatis)
       const waktuSekarang = new Date().toISOString();
-
-      // 2. Simpan Data Jurnal (Paket lengkap buat History)
       const keyJurnal = `jurnal_data_${userEmail}`;
       const existing = JSON.parse(localStorage.getItem(keyJurnal) || "[]");
 
       const dataBaru = {
         ...formData,
         id: Date.now(),
-        tanggalInput: waktuSekarang // Ini yang bakal dibaca History
+        tanggalInput: waktuSekarang
       };
 
       existing.push(dataBaru);
       localStorage.setItem(keyJurnal, JSON.stringify(existing));
 
-      // 3. Tambah Poin khusus akun ini
       const keyPoin = `totalPoints_${userEmail}`;
       const points = parseInt(localStorage.getItem(keyPoin) || "0");
       localStorage.setItem(keyPoin, (points + 5).toString());
@@ -93,6 +108,7 @@ export default function Jurnal() {
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white rounded-lg shadow-md p-6">
       <form onSubmit={handleSubmit}>
+        {/* TAMPILAN TETAP SAMA PERSIS SESUAI REQUEST LU */}
         <div className="mb-4">
           <label className="block text-base font-bold text-black mb-1 text-left">Apa anda masak atau makan hari ini?</label>
           <select name="aktivitas" value={formData.aktivitas} onChange={handleChange} className="w-36 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded px-3 py-2 focus:outline-none">
@@ -134,7 +150,6 @@ export default function Jurnal() {
           </div>
         </div>
 
-        {/* Jarak tombol gue samain kayak punya lu */}
         <div className="flex justify-between gap-3 mt-40">
           <button onClick={handleCancel} className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded">Cancel</button>
           <button onClick={handleReset} className="w-full py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded">Reset</button>

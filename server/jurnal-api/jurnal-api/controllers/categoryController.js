@@ -1,8 +1,8 @@
 const { Category } = require('../models');
 
-// GET /api/categories
 const getCategories = async (req, res) => {
   try {
+    // Ambil semua data dari tabel Category di database
     const categories = await Category.findAll({
       attributes: ['id', 'name', 'description'],
       order: [['name', 'ASC']],
@@ -16,7 +16,7 @@ const getCategories = async (req, res) => {
     console.error('Get categories error:', error);
     return res.status(500).json({
       success: false,
-      message: 'Terjadi kesalahan server.',
+      message: 'Terjadi kesalahan server saat mengambil kategori.',
     });
   }
 };

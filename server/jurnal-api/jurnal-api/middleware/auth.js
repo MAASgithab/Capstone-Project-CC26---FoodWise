@@ -9,15 +9,15 @@ const auth = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
+    // Pastikan lu punya JWT_SECRET di file .env
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Sekarang ini bakal ketemu karena databasenya udah lu copy
     const user = await User.findByPk(decoded.id);
-
     if (!user) {
       return res.status(401).json({ success: false, message: 'User not found' });
     }
 
+    // Lu simpen data user di request, biar controller bisa tau siapa yang akses
     req.user = user;
     next();
   } catch (error) {
