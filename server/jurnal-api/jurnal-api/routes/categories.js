@@ -4,7 +4,7 @@ const { getCategories } = require('../controllers/categoryController');
 
 const router = express.Router();
 
-// GET /api/categories
+// Sekarang route ini aman, cuma bisa dibuka kalau bawa Token (auth)
 router.get('/', auth, getCategories);
 
 module.exports = router;

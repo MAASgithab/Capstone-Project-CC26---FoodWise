@@ -5,8 +5,7 @@
 **FoodWise** adalah aplikasi web yang dirancang untuk membantu pengguna dalam mengelola dan melacak limbah makanan mereka. Aplikasi ini memungkinkan pengguna untuk:
 
 - Mendaftar dan masuk ke akun mereka dengan sistem autentikasi yang aman
-- Mencatat volume limbah makanan yang mereka hasilkan
-- Mengkategorikan limbah berdasarkan jenis (contoh: Kompos, Daur Ulang, dll)
+- Mengkategorikan limbah berdasarkan jenis
 - Melihat dashboard dengan statistik dan analisis penggunaan limbah
 - Membaca panduan tentang pengelolaan limbah makanan yang berkelanjutan
 
@@ -41,19 +40,13 @@ npm install
 
 FoodWise menggunakan beberapa backend API yang harus dijalankan secara terpisah.
 
-**API Sign-Up (Port 4000):**
+**API Auth (Port 4000):**
 ```bash
-cd server/sign-up-api
+cd server/auth-api/backend
 npm install
 ```
 
-**API Sign-In (Port 3000):**
-```bash
-cd server/log-in-api
-npm install
-```
-
-**Jurnal API (Port 5000) - Opsional untuk fitur advanced:**
+**Jurnal API (Port 5000)**
 ```bash
 cd server/jurnal-api/jurnal-api
 npm install
@@ -62,8 +55,7 @@ npm install
 #### 4. Environment Configuration
 
 Pastikan semua backend APIs dapat diakses pada port yang sesuai:
-- Sign-Up API: `http://localhost:4000`
-- Sign-In API: `http://localhost:3000`
+- Auth API: `http://localhost:3001`
 - Jurnal API: `http://localhost:5000`
 
 ---
