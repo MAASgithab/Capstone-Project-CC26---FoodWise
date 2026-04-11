@@ -18,6 +18,44 @@ export default function Authentication() {
 
   // Fungsi untuk menangani perubahan input
   const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Tentukan endpoint berdasarkan tab yang aktif
+    const endpoint = activeTab === "signin" ? "signin" : "signup";
+
+    try {
+      const response = await fetch(`http://localhost:3002/api/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          // namaLengkap: formData.namaLengkap, // Aktifkan jika backend sudah support field nama
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 1. Simpan token ke localStorage biar awet
+        localStorage.setItem("token", data.token);
+        
+        // 2. Kasih tau user
+        alert(activeTab === "signin" ? "Yeay! Login Berhasil!" : "Registrasi Berhasil!");
+
+        // 3. PINDAH KE DASHBOARD
+        navigate("/dashboard"); 
+
+        window.location.reload();
+      } else {
+        alert("Gagal: " + data.error);
+      }
+    } catch (error) {
+      alert("Server mati atau koneksi ditolak (Cek CORS/Backend).");
     setFormData({ ...formData, [e.target.name]: e.target.value }); // Update nilai field yang berubah
   };
 
