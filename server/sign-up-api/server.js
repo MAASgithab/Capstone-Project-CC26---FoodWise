@@ -6,28 +6,14 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 // CORS middleware - HARUS SEBELUM routes
 =======
 >>>>>>> parent of b34e4e0 (feat: update login/signup logic and fix CORS issues between auth and journal services)
+=======
+>>>>>>> parent of e4d88ab (update dashboard and api auth)
 app.use(express.json());
-
-app.use((req, res, next) => {
-  // Set CORS headers untuk semua requests
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '3600');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    console.log('OPTIONS request ke', req.path);
-    return res.status(200).end();
-  }
-  
-  next();
-});
 
 const Database = require('better-sqlite3');
 const db = new Database('./users.db');
