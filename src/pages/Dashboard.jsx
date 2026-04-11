@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import CardProduct from '../component/Dashboard/CardProduct'
 import { Progress } from "flowbite-react";
+import { useAuth } from "../context/useAuth"; // Import custom hook untuk auth
 
 export default function Dashboard() {
+  const { user } = useAuth(); // Menggunakan custom hook untuk mendapatkan data user
+
+
   // State untuk menyimpan total poin user yang dibaca dari localStorage
   const [totalPoint, setTotalPoint] = useState(0);
 
@@ -88,6 +92,9 @@ export default function Dashboard() {
   return (
     // Wrapper utama: lebar maksimal 480px, tengah layar, padding, background putih
     <div className="w-10/12 mx-auto p-5 bg-white min-h-screen">
+      <div className="mb-6 flex justify-center text-5xl">
+        <h1>Selamat Datang {user?.nama_lengkap || user?.email}!</h1>
+      </div>
       {/* ==============================
           SECTION JURNAL FOODWISE
       ============================== */}

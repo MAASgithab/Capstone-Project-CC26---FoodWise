@@ -5,6 +5,7 @@ import App from "../App";
 import Panduan from "../pages/Panduan";
 import Jurnal from "../pages/Jurnal";
 import Authentication from "../pages/Authentication";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
     {
@@ -17,7 +18,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/dashboard",
-                element: <Dashboard />
+                element: <ProtectedRoute><Dashboard /></ProtectedRoute>
             },
             {
                 path: "/panduan",
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "jurnal",
-                element:<Jurnal/>
+                element:<ProtectedRoute><Jurnal/></ProtectedRoute>
             },
             {
                 path:"/pendaftaran",
