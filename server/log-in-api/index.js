@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 3001;
+const PORT = 3000;
 
 // Middleware biar API bisa baca JSON
 app.use(express.json());

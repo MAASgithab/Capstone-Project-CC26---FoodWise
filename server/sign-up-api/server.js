@@ -1,14 +1,18 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); // <--- WAJIB ADA
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid'); 
 
 const app = express();
+<<<<<<< HEAD
+<<<<<<< HEAD
 
-// PENTING: CORS harus paling atas sebelum route apapun
-app.use(cors());
+// CORS middleware - HARUS SEBELUM routes
+=======
+>>>>>>> parent of b34e4e0 (feat: update login/signup logic and fix CORS issues between auth and journal services)
+=======
+>>>>>>> parent of e4d88ab (update dashboard and api auth)
 app.use(express.json());
 
 const Database = require('better-sqlite3');
@@ -21,12 +25,6 @@ db.prepare(`CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL
 )`).run();
 
-// Route pengetesan biar tidak "Cannot GET /"
-app.get('/', (req, res) => {
-    res.send('Server Auth FoodWise (Port 3002) sudah aktif dan mendukung CORS!');
-});
-
-// ROUTE SIGN UP
 app.post('/api/signup', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -40,7 +38,7 @@ app.post('/api/signup', async (req, res) => {
             return res.status(400).json({ error: 'Email sudah terdaftar' });
         }
 
-        const saltRounds = 10;
+        const saltRounds = 10; 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const newUser = {
@@ -50,21 +48,21 @@ app.post('/api/signup', async (req, res) => {
         };
 
         db.prepare('INSERT INTO users (user_id, email, password) VALUES (?, ?, ?)')
-            .run(newUser.user_id, newUser.email, newUser.password);
+          .run(newUser.user_id, newUser.email, newUser.password);
 
         const token = jwt.sign(
-            { user_id: newUser.user_id },
-            process.env.JWT_SECRET || 'secret_key_foodwise',
+            { user_id: newUser.user_id }, 
+            process.env.JWT_SECRET, 
             { expiresIn: '1h' }
         );
 
-        res.status(201).json({
-            message: 'Registrasi berhasil',
-            user: {
-                user_id: newUser.user_id,
-                email: newUser.email
+        res.status(201).json({ 
+            message: 'Registrasi berhasil', 
+            user: { 
+                user_id: newUser.user_id, 
+                email: newUser.email 
             },
-            token
+            token 
         });
 
     } catch (error) {
@@ -73,7 +71,6 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-// ROUTE SIGN IN
 app.post('/api/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -93,18 +90,18 @@ app.post('/api/signin', async (req, res) => {
         }
 
         const token = jwt.sign(
-            { user_id: user.user_id },
-            process.env.JWT_SECRET || 'secret_key_foodwise',
+            { user_id: user.user_id }, 
+            process.env.JWT_SECRET, 
             { expiresIn: '1h' }
         );
 
-        res.status(200).json({
-            message: 'Login berhasil',
-            user: {
-                user_id: user.user_id,
-                email: user.email
+        res.status(200).json({ 
+            message: 'Login berhasil', 
+            user: { 
+                user_id: user.user_id, 
+                email: user.email 
             },
-            token
+            token 
         });
 
     } catch (error) {
@@ -113,7 +110,7 @@ app.post('/api/signin', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
