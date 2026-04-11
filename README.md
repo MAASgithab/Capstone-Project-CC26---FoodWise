@@ -5,8 +5,7 @@
 **FoodWise** adalah aplikasi web yang dirancang untuk membantu pengguna dalam mengelola dan melacak limbah makanan mereka. Aplikasi ini memungkinkan pengguna untuk:
 
 - Mendaftar dan masuk ke akun mereka dengan sistem autentikasi yang aman
-- Mencatat volume limbah makanan yang mereka hasilkan
-- Mengkategorikan limbah berdasarkan jenis (contoh: Kompos, Daur Ulang, dll)
+- Mengkategorikan limbah berdasarkan jenis
 - Melihat dashboard dengan statistik dan analisis penggunaan limbah
 - Membaca panduan tentang pengelolaan limbah makanan yang berkelanjutan
 
