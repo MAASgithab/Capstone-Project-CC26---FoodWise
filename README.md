@@ -1,16 +1,105 @@
-# React + Vite
+# FoodWise - Capstone Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Deskripsi Singkat Proyek
 
-Currently, two official plugins are available:
+**FoodWise** adalah aplikasi web yang dirancang untuk membantu pengguna dalam mengelola dan melacak limbah makanan mereka. Aplikasi ini memungkinkan pengguna untuk:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Mendaftar dan masuk ke akun mereka dengan sistem autentikasi yang aman
+- Mencatat volume limbah makanan yang mereka hasilkan
+- Mengkategorikan limbah berdasarkan jenis (contoh: Kompos, Daur Ulang, dll)
+- Melihat dashboard dengan statistik dan analisis penggunaan limbah
+- Membaca panduan tentang pengelolaan limbah makanan yang berkelanjutan
 
-## React Compiler
+FoodWise dibangun menggunakan **React** dengan **Vite** sebagai build tool, **Tailwind CSS** untuk styling, dan backend API Node.js untuk autentikasi dan manajemen data.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Petunjuk Setup Environment
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prasyarat (Prerequisites)
+
+Pastikan Anda telah menginstall software berikut:
+- **Node.js** (v14 atau lebih baru) - [Download di sini](https://nodejs.org/)
+- **npm** (biasanya sudah terinstall bersama Node.js)
+- **Git** - [Download di sini](https://git-scm.com/)
+
+### Langkah-Langkah Setup
+
+#### 1. Clone Repository
+```bash
+git clone <repository-url>
+cd "react project/Capstone - FoodWise"
+```
+
+#### 2. Install Dependencies Frontend
+```bash
+# Install dependencies untuk aplikasi React utama
+npm install
+```
+
+#### 3. Setup Backend APIs
+
+FoodWise menggunakan beberapa backend API yang harus dijalankan secara terpisah.
+
+**API Sign-Up (Port 4000):**
+```bash
+cd server/sign-up-api
+npm install
+```
+
+**API Sign-In (Port 3000):**
+```bash
+cd server/log-in-api
+npm install
+```
+
+**Jurnal API (Port 5000) - Opsional untuk fitur advanced:**
+```bash
+cd server/jurnal-api/jurnal-api
+npm install
+```
+
+#### 4. Environment Configuration
+
+Pastikan semua backend APIs dapat diakses pada port yang sesuai:
+- Sign-Up API: `http://localhost:4000`
+- Sign-In API: `http://localhost:3000`
+- Jurnal API: `http://localhost:5000`
+
+---
+
+## Cara Menjalankan Aplikasi
+
+### Jalankan Semua Services (Recommended)
+
+Anda perlu menjalankan aplikasi dalam beberapa terminal yang terpisah:
+
+**Terminal 1 - Jalankan Authentication API:**
+```bash
+cd server\auth-project\backend
+npm start
+# API akan berjalan di http://localhost:3001
+```
+
+**Terminal 2 - Jalankan Aplikasi React:**
+```bash
+npm run dev
+# Aplikasi akan berjalan di http://localhost:5173
+```
+
+### Akses Aplikasi
+
+Setelah semua services berjalan, buka browser Anda dan akses:
+```
+http://localhost:5173
+```
+
+---
+
+## Fitur Aplikasi
+
+- ✅ **Sistem Autentikasi**: Pendaftaran dan login pengguna yang aman
+- ✅ **Dashboard**: Melihat statistik dan riwayat limbah makanan
+- ✅ **Jurnal Limbah**: Mencatat dan mengkategorikan limbah makanan
+- ✅ **Protected Routes**: Halaman dashboard dan jurnal hanya dapat diakses setelah login
+- ✅ **Responsive Design**: Desain yang responsif untuk desktop dan mobile
