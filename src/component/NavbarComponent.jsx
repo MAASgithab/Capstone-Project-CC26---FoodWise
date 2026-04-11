@@ -1,10 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Avatar,
-  Dropdown,
-  DropdownDivider,
-  DropdownHeader,
-  DropdownItem,
   Navbar,
   NavbarBrand,
   NavbarCollapse,
@@ -12,57 +7,77 @@ import {
   NavbarToggle,
   Button,
 } from "flowbite-react";
-// import logoBrand from public folder
 import logoBrand from "/public/Foodwiseicons.png";
 
 export default function NavbarComponent() {
+  // State untuk mengecek apakah user sudah login atau belum
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Cek token di localStorage saat komponen pertama kali muncul
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // Fungsi untuk Logout
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Hapus token dari brankas browser
+    setIsLoggedIn(false);
+    alert("Berhasil Logout!");
+    window.location.href = "/"; // Balik ke halaman utama
+  };
+
   return (
-    <>
-      <div>
-        <Navbar fluid className="!bg-white sticky top-0 z-50">
-          <NavbarBrand href="/">
-            <img
-              src={logoBrand}
-              className="mr-3 h-6 sm:h-9"
-              alt="Flowbite React Logo"
-            />
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-black">
-              FoodWise
-            </span>
-          </NavbarBrand>
-          <NavbarCollapse>
-            <NavbarLink href="/" className="!text-black"> 
-              Beranda
-            </NavbarLink>
-            <NavbarLink href="/dashboard"  className="!text-blue-950">
-              Dashboard
-            </NavbarLink>
-            <NavbarLink href="/Jurnal" className="!text-blue-950">
-              JurnWaste
-            </NavbarLink>
-            <NavbarLink href="/panduan"  className="!text-blue-950">
-              Panduan
-            </NavbarLink>
-          </NavbarCollapse>
-          <NavbarCollapse>
-            <NavbarLink href="/pendaftaran"> 
-              <Button>
-                Login
-              </Button>
-            </NavbarLink>
-            <NavbarLink href="/pendaftaran"> 
-              <Button className="!bg-green-500">
-                Sign Up
-              </Button>
-            </NavbarLink>
-            <NavbarLink href="/"> 
-              <Button className="!bg-red-500">
-                Logout
-              </Button>
-            </NavbarLink>
-          </NavbarCollapse>
-        </Navbar>
+    <Navbar fluid className="!bg-white sticky top-0 z-50 border-b shadow-sm">
+      <NavbarBrand href="/">
+        <img
+          src={logoBrand}
+          className="mr-3 h-6 sm:h-9"
+          alt="FoodWise Logo"
+        />
+        <span className="self-center whitespace-nowrap text-xl font-bold dark:text-black">
+          FoodWise
+        </span>
+      </NavbarBrand>
+
+      {/* Bagian Tombol Aksi (Paling Kanan) */}
+      <div className="flex md:order-2 gap-2">
+        {!isLoggedIn ? (
+          // Jika BELUM Login, tampilkan Login & Sign Up
+          <>
+            <Button href="/pendaftaran" color="info" size="sm">
+              Login
+            </Button>
+            <Button href="/pendaftaran" className="!bg-green-500" size="sm">
+              Sign Up
+            </Button>
+          </>
+        ) : (
+          // Jika SUDAH Login, tampilkan Logout
+          <Button color="failure" size="sm" onClick={handleLogout}>
+            Logout
+          </Button>
+        )}
+        <NavbarToggle />
       </div>
-    </>
+
+      {/* Menu Navigasi Tengah */}
+      <NavbarCollapse>
+        <NavbarLink href="/" className="!text-black font-medium">
+          Beranda
+        </NavbarLink>
+        <NavbarLink href="/dashboard" className="!text-blue-950 font-medium">
+          Dashboard
+        </NavbarLink>
+        <NavbarLink href="/Jurnal" className="!text-blue-950 font-medium">
+          JurnWaste
+        </NavbarLink>
+        <NavbarLink href="/panduan" className="!text-blue-950 font-medium">
+          Panduan
+        </NavbarLink>
+      </NavbarCollapse>
+    </Navbar>
   );
 }
