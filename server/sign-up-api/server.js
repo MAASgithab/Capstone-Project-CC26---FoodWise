@@ -7,10 +7,13 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 // CORS middleware - HARUS SEBELUM routes
 =======
 >>>>>>> parent of b34e4e0 (feat: update login/signup logic and fix CORS issues between auth and journal services)
+=======
+>>>>>>> parent of e4d88ab (update dashboard and api auth)
 =======
 >>>>>>> parent of e4d88ab (update dashboard and api auth)
 app.use(express.json());
