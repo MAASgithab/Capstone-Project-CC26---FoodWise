@@ -62,6 +62,11 @@ npm run dev
 # Aplikasi akan berjalan di http://localhost:5173
 ```
 
+Jika API dan react tidak bisa di jalankan, lakukan ini:
+hapus node_modules dan json package-lock baik di dalam api maupun di luar api
+lalu lakukan npm install
+dan lakukan npm start untuk menyalakan api nya dan npm run dev untuk menyalakan projek nya
+
 ### Akses Aplikasi
 
 Setelah semua services berjalan, buka browser Anda dan akses:
