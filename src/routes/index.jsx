@@ -6,7 +6,6 @@ import Panduan from "../pages/Panduan";
 import Jurnal from "../pages/Jurnal";
 import Authentication from "../pages/Authentication";
 import ProtectedRoute from "./ProtectedRoute";
-import History from "../pages/History";
 
 export const router = createBrowserRouter([
     {
@@ -32,10 +31,6 @@ export const router = createBrowserRouter([
             {
                 path: "/pendaftaran",
                 element: <Authentication />
-            },
-            {
-                path: "history",
-                element: <ProtectedRoute><History /></ProtectedRoute>
             },
         ]
     }

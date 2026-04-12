@@ -3,8 +3,12 @@ import CarouselComponent from "./component/CarouselComponent";
 import NavbarComponent from "./component/NavbarComponent";
 import CardProduct from "./component/Dashboard/CardProduct";
 import { Button } from "flowbite-react";
+import { useNavigate } from "react-router";
+
 
 export default function App() {
+  const navigate = useNavigate();
+
   return (
     <>
       <section className="relative w-full h-screen min-h-[500px] overflow-hidden">
@@ -30,6 +34,7 @@ export default function App() {
 
             <div className="flex gap-4 justify-center flex-wrap">
               <Button
+                onClick={()=> navigate('/panduan')}
                 size="lg"
                 className="
                 text-white 
