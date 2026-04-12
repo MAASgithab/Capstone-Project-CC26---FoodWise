@@ -8,30 +8,32 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const [totalPoint, setTotalPoint] = useState(0);
+  const [logs, setLogs] = useState([]); // State untuk tabel history
   const [fermentasiData, setFermentasiData] = useState([
-    { id: 1, nama: "Bokashi", kg: 0, status: "Sedang di Fermentasi" },
-    { id: 2, nama: "Kompos", kg: 0, status: "Sedang di Fermentasi" },
-    { id: 3, nama: "Eco-enzyme", kg: 0, status: "Sedang di Fermentasi" },
+    { id: 1, nama: "Bokashi", kg: 0 },
+    { id: 2, nama: "Kompos", kg: 0 },
+    { id: 3, nama: "Eco-enzyme", kg: 0 },
   ]);
   const [sampahTotalKg, setSampahTotalKg] = useState(0);
 
   useEffect(() => {
-    // 1. Validasi Token (Keamanan)
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
       return;
     }
 
-    // 2. LOGIKA PER AKUN (Gunakan email sebagai primary key di lokal)
     const userEmail = user?.email || "guest";
 
-    // Ambil poin yang tersimpan khusus email ini
+    // 1. Ambil Poin
     const storedPoints = parseInt(localStorage.getItem(`totalPoints_${userEmail}`)) || 0;
     setTotalPoint(storedPoints);
 
-    // Ambil semua data jurnal khusus email ini
+    // 2. Ambil Data Jurnal untuk Kalkulasi & Tabel History
     const journalsData = JSON.parse(localStorage.getItem(`jurnal_data_${userEmail}`)) || [];
+
+    // Set data untuk tabel (Data terbaru di atas)
+    setLogs([...journalsData].reverse());
 
     const fermentasiTotals = {
       "Bokashi": 0,
@@ -39,101 +41,129 @@ export default function Dashboard() {
       "Eco-enzyme": 0,
     };
 
-    // Kalkulasi total sampah berdasarkan tindakan/kategori
     journalsData.forEach((journal) => {
       const kategori = journal.tindakan || "";
       const berat = parseFloat(journal.berat) || 0;
       const satuan = journal.beratSatuan;
-
-      // Konversi otomatis ke Kg jika inputnya Gr
       const beratKg = satuan === "gr" ? berat / 1000 : berat;
 
       if (kategori === "Bokashi") {
         fermentasiTotals["Bokashi"] += beratKg;
       } else if (kategori === "Kompos") {
         fermentasiTotals["Kompos"] += beratKg;
-      } else if (kategori.toLowerCase().includes("enz")) { // Menangkap Eco-Enzym atau Eco-enzyme
+      } else if (kategori.toLowerCase().includes("enz")) {
         fermentasiTotals["Eco-enzyme"] += beratKg;
       }
     });
 
     const totalSampah = fermentasiTotals["Bokashi"] + fermentasiTotals["Kompos"] + fermentasiTotals["Eco-enzyme"];
 
-    // Update tampilan kartu bawah
     setFermentasiData([
-      { id: 1, nama: "Bokashi", kg: fermentasiTotals["Bokashi"].toFixed(2), status: "Sedang di Fermentasi" },
-      { id: 2, nama: "Kompos", kg: fermentasiTotals["Kompos"].toFixed(2), status: "Sedang di Fermentasi" },
-      { id: 3, nama: "Eco-enzyme", kg: fermentasiTotals["Eco-enzyme"].toFixed(2), status: "Sedang di Fermentasi" },
+      { id: 1, nama: "Bokashi", kg: fermentasiTotals["Bokashi"].toFixed(2) },
+      { id: 2, nama: "Kompos", kg: fermentasiTotals["Kompos"].toFixed(2) },
+      { id: 3, nama: "Eco-enzyme", kg: fermentasiTotals["Eco-enzyme"].toFixed(2) },
     ]);
 
     setSampahTotalKg(totalSampah);
   }, [user, navigate]);
 
-  const maxKg = 1000; // Target progress bar
+  const maxKg = 1000;
   const persentaseSampah = (sampahTotalKg / maxKg) * 100;
 
   return (
     <div className="w-10/12 mx-auto p-5 bg-white min-h-screen">
+      {/* HEADER */}
       <div className="mb-6 flex justify-center text-5xl">
-        {/* Fallback ke username jika nama_lengkap kosong */}
         <h1>Selamat Datang {user?.nama_lengkap || user?.email?.split('@')[0]}!</h1>
       </div>
 
+      {/* JUDUL JURNAL */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Jurnal FoodWise &gt;&gt;</h2>
-        <button
-          onClick={() => navigate("/history")}
-          className="bg-green-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md hover:bg-green-800 transition-all"
-        >
-          📜 Lihat Riwayat
-        </button>
       </div>
 
+      {/* KOTAK ATAS: POIN & PROGRESS */}
       <div className="flex gap-3 mb-4">
-        {/* Kotak Point */}
-        <div className="border border-gray-300 rounded-sm shadow-sm w-full md:w-64 bg-white">
-          <h2 className="text-sm font-bold border-b border-gray-300 px-4 py-2">Total Point</h2>
-          <div className="flex justify-between items-center px-4 py-6">
+        <div className="border border-gray-300 rounded-sm shadow-sm w-full md:w-64 bg-white p-2">
+          <h2 className="text-sm font-bold border-b border-gray-300 px-2 py-2 mb-2">Total Point</h2>
+          <div className="flex justify-between items-center px-2">
             <div className="flex flex-col items-center">
               <span className="text-4xl font-bold">{totalPoint}</span>
-              <span className="text-xs font-bold mt-1 uppercase">Point</span>
+              <span className="text-xs font-bold uppercase">Point</span>
             </div>
-            <div className="relative w-20 h-20">
-              {/* Ikon Bintang Dekoratif */}
-              <svg viewBox="0 0 24 24" className="w-12 h-12 text-yellow-300 absolute bottom-0 left-0" fill="#FDE047" stroke="#EAB308" strokeWidth="0.5">
+            <div className="relative w-16 h-16">
+              <svg viewBox="0 0 24 24" className="w-10 h-10 text-yellow-300 absolute bottom-0 left-0" fill="#FDE047">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
-              <svg viewBox="0 0 24 24" className="w-16 h-16 text-yellow-400 absolute top-0 right-0 z-10" fill="#FACC15" stroke="#CA8A04" strokeWidth="0.5">
+              <svg viewBox="0 0 24 24" className="w-14 h-14 text-yellow-400 absolute top-0 right-0 z-10" fill="#FACC15">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
               </svg>
             </div>
           </div>
         </div>
 
-        {/* Kotak Progress Sampah */}
         <div className="flex-1 border border-gray-300 rounded-lg p-3 bg-white">
           <p className="text-xl text-center mb-2 font-medium">Sampah terkumpul</p>
           <p className="text-2xl font-bold mb-2 text-green-700">{sampahTotalKg.toFixed(2)} Kg</p>
-          <div className="flex items-center gap-2">
-            <div className="flex-1">
-              <Progress progress={persentaseSampah} color="green" size="xl" />
-            </div>
-          </div>
+          <Progress progress={persentaseSampah} color="green" size="xl" />
         </div>
       </div>
 
-      {/* Kartu Detail Kategori */}
+      {/* KARTU DETAIL KATEGORI */}
       <div className="flex gap-2 mb-8">
         {fermentasiData.map((item) => (
-          <div key={item.id} className="flex-1 border border-gray-300 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <div className="bg-green-500 py-2 text-center">
-              <p className="text-white text-xs font-bold uppercase tracking-wider">{item.nama}</p>
+          <div key={item.id} className="flex-1 border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-green-500 py-2 text-center font-bold text-white text-xs uppercase">
+              {item.nama}
             </div>
-            <div className="p-2 py-10 text-center bg-white">
-              <p className="text-2xl font-bold my-1">{item.kg} Kg</p>
+            <div className="p-6 text-center bg-white font-bold text-2xl">
+              {item.kg} Kg
             </div>
           </div>
         ))}
+      </div>
+
+      {/* =========================================== */}
+      {/* TABEL HISTORY (LANGSUNG DI DASHBOARD) */}
+      {/* =========================================== */}
+      <div className="mt-10 border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
+        <div className="bg-gray-50 px-4 py-3 border-b border-gray-300">
+          <h3 className="text-lg font-bold text-green-800">Riwayat Jurnal Terbaru</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-green-50 text-green-800 font-bold">
+              <tr>
+                <th className="p-3 border-b">Waktu</th>
+                <th className="p-3 border-b">Aktivitas</th>
+                <th className="p-3 border-b">Tindakan</th>
+                <th className="p-3 border-b">Berat</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.length > 0 ? (
+                logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-gray-50 border-b last:border-0 transition-colors">
+                    <td className="p-3 text-gray-600">
+                      {new Date(log.id).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}
+                      ---</td>
+                    <td className="p-3 font-medium">{log.aktivitas}</td>
+                    <td className="p-3">
+                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                        {log.tindakan}
+                      </span>
+                    </td>
+                    <td className="p-3 font-bold text-gray-800">{log.berat} {log.beratSatuan}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="p-10 text-center text-gray-400 italic">Belum ada riwayat aktivitas.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

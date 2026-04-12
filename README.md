@@ -36,27 +36,10 @@ cd "react project/Capstone - FoodWise"
 npm install
 ```
 
-#### 3. Setup Backend APIs
-
-FoodWise menggunakan beberapa backend API yang harus dijalankan secara terpisah.
-
-**API Auth (Port 4000):**
-```bash
-cd server/auth-api/backend
-npm install
-```
-
-**Jurnal API (Port 5000)**
-```bash
-cd server/jurnal-api/jurnal-api
-npm install
-```
-
-#### 4. Environment Configuration
+#### 3. Environment Configuration
 
 Pastikan semua backend APIs dapat diakses pada port yang sesuai:
 - Auth API: `http://localhost:3001`
-- Jurnal API: `http://localhost:5000`
 
 ---
 
@@ -78,6 +61,11 @@ npm start
 npm run dev
 # Aplikasi akan berjalan di http://localhost:5173
 ```
+
+Jika API dan react tidak bisa di jalankan, lakukan ini:
+hapus node_modules dan json package-lock baik di dalam api maupun di luar api
+lalu lakukan npm install
+dan lakukan npm start untuk menyalakan api nya dan npm run dev untuk menyalakan projek nya
 
 ### Akses Aplikasi
 

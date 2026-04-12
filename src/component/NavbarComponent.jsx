@@ -1,19 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate untuk redirect
 import {
-  Avatar,
-  Dropdown,
-  DropdownDivider,
-  DropdownHeader,
-  DropdownItem,
   Navbar,
   NavbarBrand,
   NavbarCollapse,
   NavbarLink,
-  NavbarToggle,
   Button,
 } from "flowbite-react";
-// import logoBrand from public folder
 import logoBrand from "/public/Foodwiseicons.png";
 import { useAuth } from "../context/useAuth"; // Import custom hook untuk auth
 
@@ -53,12 +46,19 @@ export default function NavbarComponent() {
             <NavbarLink href="/" className="!text-black">
               Beranda
             </NavbarLink>
-            <NavbarLink href="/dashboard" className="!text-blue-950">
-              Dashboard
-            </NavbarLink>
-            <NavbarLink href="/Jurnal" className="!text-blue-950">
-              JurnWaste
-            </NavbarLink>
+            
+            {/* INI KUNCINYA: Sembunyikan Dashboard dan JurnWaste kalau belum login */}
+            {isAuthenticated && (
+              <>
+                <NavbarLink href="/dashboard" className="!text-blue-950">
+                  Dashboard
+                </NavbarLink>
+                <NavbarLink href="/Jurnal" className="!text-blue-950">
+                  JurnWaste
+                </NavbarLink>
+              </>
+            )}
+
             <NavbarLink href="/panduan" className="!text-blue-950">
               Panduan
             </NavbarLink>
